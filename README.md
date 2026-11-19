@@ -28,7 +28,7 @@ Ouvrir `index.html` dans un navigateur, ou la page publiée sur GitHub Pages, pu
 - **Changements** : on charge l'ancien patch, la page liste les projecteurs modifiés, ajoutés et supprimés. Ce récap peut être ajouté en tête de la feuille.
 - **Enregistrer la feuille** : un seul fichier `.html` avec le patch, les annotations, les masquages et les réglages, à envoyer tel quel.
 
-Interface et feuilles en français, anglais, espagnol, allemand, japonais, russe et arabe.
+Interface et documents imprimés en français, anglais, espagnol, allemand, japonais, russe et arabe. La langue de l'interface et celle des documents se choisissent séparément.
 
 Pour imprimer : marges *Aucune*, « Graphiques d'arrière-plan » coché. Pour les planches adhésives, imprimer à 100 % (*Taille réelle*).
 

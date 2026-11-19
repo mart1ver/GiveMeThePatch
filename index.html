@@ -41,7 +41,7 @@ aside { background: var(--panel); border-right: 1px solid var(--line); overflow-
 .dl { display: flex; gap: 8px; }
 .dl a { flex: 1; text-align: center; text-decoration: none; }
 .brand p { margin: 0; font-size: 12px; color: var(--muted); }
-select.lang { margin-inline-start: auto; flex: none; align-self: flex-start; font: inherit; font-size: 12px; color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 4px 6px; max-width: 8.5em; }
+select.lang { margin-inline-start: auto; flex: none; align-self: flex-start; font: inherit; font-size: 12px; color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 4px 6px; }
 .drop { border: 1.5px dashed var(--line); border-radius: 12px; background: var(--drop); padding: 22px 16px; text-align: center; cursor: pointer; transition: border-color .15s, background .15s; }
 .drop:hover, .drop.over { border-color: var(--accent); }
 .drop b { display: block; font-size: 14px; margin-bottom: 4px; }
@@ -116,10 +116,11 @@ body[data-tab="diff"] aside [data-tab]:not([data-tab~="diff"]) { display: none !
 .umap .scale span { position: absolute; top: .4mm; transform: translateX(-50%); }
 .umap .scale span::before { content: ''; position: absolute; left: 50%; top: -.9mm; height: .8mm; border-left: .3pt solid #999; }
 .maplegend { font-size: 7.4pt; color: #555; margin: -2mm 0 3mm; }
+#pages[dir=ltr] { direction: ltr; }
 /* arabe (droite à gauche) : adresses, numéros et plages restent écrits de gauche à droite */
-[dir=rtl] .sheet td.num, [dir=rtl] .sheet td.ad, [dir=rtl] .sheet td.fid, [dir=rtl] .sheet td.dfrom, [dir=rtl] .sheet td.dto,
-[dir=rtl] .lbl .big { direction: ltr; unicode-bidi: isolate; }
-[dir=rtl] .sheet td.num, [dir=rtl] .sheet td.fid { text-align: right; }
+#pages[dir=rtl] .sheet td.num, #pages[dir=rtl] .sheet td.ad, #pages[dir=rtl] .sheet td.fid, #pages[dir=rtl] .sheet td.dfrom, #pages[dir=rtl] .sheet td.dto,
+#pages[dir=rtl] .lbl .big { direction: ltr; unicode-bidi: isolate; }
+#pages[dir=rtl] .sheet td.num, #pages[dir=rtl] .sheet td.fid { text-align: right; }
 dialog#mapDlg { border: 1px solid var(--line); border-radius: 12px; padding: 18px 20px; max-width: 520px; width: calc(100% - 32px); background: var(--panel, #fff); color: var(--ink); }
 dialog#mapDlg::backdrop { background: rgba(0,0,0,.45); }
 dialog#mapDlg h2 { margin: 0 0 6px; font-size: 17px; }
@@ -268,6 +269,19 @@ dialog#mapDlg h2 { margin: 0 0 6px; font-size: 17px; }
       <input type="file" id="file" accept=".csv,.txt,.html,.htm,text/csv,text/html" hidden>
       <div id="dropText"><b data-i18n="dropTitle">Déposer le patch ici</b><span data-i18n="dropSub">CSV ou .html — ou cliquer pour choisir un fichier</span></div>
     </label>
+
+    <fieldset>
+      <legend data-i18n="legPlang">Langue des documents imprimés</legend>
+      <select id="plang" class="lbsel" aria-label="Langue des documents imprimés">
+        <option value="fr">FR · Français</option>
+        <option value="en">EN · English</option>
+        <option value="es">ES · Español</option>
+        <option value="de">DE · Deutsch</option>
+        <option value="ja">JA · 日本語</option>
+        <option value="ru">RU · Русский</option>
+        <option value="ar">AR · العربية</option>
+      </select>
+    </fieldset>
 
     <fieldset data-tab="patch">
       <legend data-i18n="legHeader">En-tête</legend>
@@ -452,7 +466,7 @@ const MARGIN = 14, ROW = 4.6, HEAD = 7, THEAD = 5, GAP = 4, H2 = 11;
 
 const I18N = {
   fr: {
-    brandTitle: 'Give Me The Patch', brandSub: 'Patch → feuille et étiquettes imprimables',
+    brandTitle: 'Give Me The Patch', legPlang: 'Langue des documents imprimés', brandSub: 'Patch → feuille et étiquettes imprimables',
     dropTitle: 'Déposer le patch ici', dropSub: 'CSV ou .html — ou cliquer pour choisir un fichier',
     legHeader: 'En-tête', lblTitle: 'Titre', lblPlace: 'Lieu / sous-titre', lblNotes: 'Cartouche (texte libre)',
     line1: 'Ligne 1', line2: 'Ligne 2', line3: 'Ligne 3', line4: 'Ligne 4',
@@ -496,7 +510,7 @@ const I18N = {
     defTitle: 'Patch lumière', docTitle: 'Give Me The Patch', locale: 'fr-FR',
   },
   en: {
-    brandTitle: 'Give Me The Patch', brandSub: 'Patch → printable sheet and labels',
+    brandTitle: 'Give Me The Patch', legPlang: 'Language of printed documents', brandSub: 'Patch → printable sheet and labels',
     dropTitle: 'Drop the patch here', dropSub: 'CSV or .html — or click to choose a file',
     legHeader: 'Header', lblTitle: 'Title', lblPlace: 'Venue / subtitle', lblNotes: 'Title block (free text)',
     line1: 'Line 1', line2: 'Line 2', line3: 'Line 3', line4: 'Line 4',
@@ -540,7 +554,7 @@ const I18N = {
     defTitle: 'Lighting patch', docTitle: 'Give Me The Patch', locale: 'en-GB',
   },
   es: {
-    brandTitle: 'Give Me The Patch', brandSub: 'Patch → hoja y etiquetas para imprimir',
+    brandTitle: 'Give Me The Patch', legPlang: 'Idioma de los documentos impresos', brandSub: 'Patch → hoja y etiquetas para imprimir',
     dropTitle: 'Suelta el patch aquí', dropSub: 'CSV o .html — o haz clic para elegir un archivo',
     legHeader: 'Encabezado', lblTitle: 'Título', lblPlace: 'Lugar / subtítulo', lblNotes: 'Cajetín (texto libre)',
     line1: 'Línea 1', line2: 'Línea 2', line3: 'Línea 3', line4: 'Línea 4',
@@ -584,7 +598,7 @@ const I18N = {
     defTitle: 'Patch de iluminación', docTitle: 'Give Me The Patch', locale: 'es-ES',
   },
   de: {
-    brandTitle: 'Give Me The Patch', brandSub: 'Patch → druckbare Liste und Etiketten',
+    brandTitle: 'Give Me The Patch', legPlang: 'Sprache der gedruckten Dokumente', brandSub: 'Patch → druckbare Liste und Etiketten',
     dropTitle: 'Patch hier ablegen', dropSub: 'CSV oder .html — oder klicken, um eine Datei zu wählen',
     legHeader: 'Kopfzeile', lblTitle: 'Titel', lblPlace: 'Ort / Untertitel', lblNotes: 'Schriftfeld (freier Text)',
     line1: 'Zeile 1', line2: 'Zeile 2', line3: 'Zeile 3', line4: 'Zeile 4',
@@ -628,7 +642,7 @@ const I18N = {
     defTitle: 'Lichtpatch', docTitle: 'Give Me The Patch', locale: 'de-DE',
   },
   ja: {
-    brandTitle: 'Give Me The Patch', brandSub: 'パッチ → 印刷用シートとラベル',
+    brandTitle: 'Give Me The Patch', legPlang: '印刷する書類の言語', brandSub: 'パッチ → 印刷用シートとラベル',
     dropTitle: 'ここにパッチをドロップ', dropSub: 'CSV または .html — クリックしてファイルを選択',
     legHeader: 'ヘッダー', lblTitle: 'タイトル', lblPlace: '会場 / サブタイトル', lblNotes: '表題欄（自由記入）',
     line1: '1行目', line2: '2行目', line3: '3行目', line4: '4行目',
@@ -672,7 +686,7 @@ const I18N = {
     defTitle: '照明パッチ', docTitle: 'Give Me The Patch', locale: 'ja-JP',
   },
   ru: {
-    brandTitle: 'Give Me The Patch', brandSub: 'Патч → таблица и этикетки для печати',
+    brandTitle: 'Give Me The Patch', legPlang: 'Язык печатных документов', brandSub: 'Патч → таблица и этикетки для печати',
     dropTitle: 'Перетащите патч сюда', dropSub: 'CSV или .html — или нажмите, чтобы выбрать файл',
     legHeader: 'Заголовок', lblTitle: 'Название', lblPlace: 'Площадка / подзаголовок', lblNotes: 'Штамп (свободный текст)',
     line1: 'Строка 1', line2: 'Строка 2', line3: 'Строка 3', line4: 'Строка 4',
@@ -716,7 +730,7 @@ const I18N = {
     defTitle: 'Световой патч', docTitle: 'Give Me The Patch', locale: 'ru-RU',
   },
   ar: {
-    brandTitle: 'Give Me The Patch', brandSub: 'الباتش ← جدول وملصقات للطباعة',
+    brandTitle: 'Give Me The Patch', legPlang: 'لغة المستندات المطبوعة', brandSub: 'الباتش ← جدول وملصقات للطباعة',
     dropTitle: 'أفلت ملف الباتش هنا', dropSub: 'CSV أو ‎.html — أو انقر لاختيار ملف',
     legHeader: 'الترويسة', lblTitle: 'العنوان', lblPlace: 'المكان / عنوان فرعي', lblNotes: 'خانة البيانات (نص حر)',
     line1: 'السطر 1', line2: 'السطر 2', line3: 'السطر 3', line4: 'السطر 4',
@@ -763,6 +777,12 @@ const I18N = {
 let LANG = store.get('lang', (navigator.language || 'fr').slice(0, 2).toLowerCase());
 if (!I18N[LANG]) LANG = 'en';
 const t = (k, ...a) => { const v = I18N[LANG][k] ?? I18N.fr[k]; return typeof v === 'function' ? v(...a) : v; };
+// langue des documents imprimés (feuille, étiquettes, changements) : suit l'interface tant qu'on ne l'a pas choisie
+let PLANG = store.get('plang', null);
+let PLANG_SET = !!I18N[PLANG];
+if (!PLANG_SET) PLANG = LANG;
+const tp = (k, ...a) => { const v = I18N[PLANG][k] ?? I18N.fr[k]; return typeof v === 'function' ? v(...a) : v; };
+const isDefTitle = v => Object.values(I18N).some(d => d.defTitle === v);
 function applyI18n() {
   document.documentElement.lang = LANG;
   document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t(el.dataset.i18n); });
@@ -941,8 +961,9 @@ function analyse(fx) {
 // ───────────── mise en page ─────────────
 const pad3 = a => a === null ? '—' : String(a).padStart(3, '0');
 const plural = n => t('fixtures', n);
-const TH_L = () => `<thead><tr><th class="fid">${t('thFid')}</th><th class="nm">${t('thName')}</th><th>${t('thType')}</th><th class="un">${t('thUniv')}</th><th class="ad">${t('thAddr')}</th></tr></thead>`;
-const TH_U = () => `<thead><tr><th class="fid">${t('thFid')}</th><th class="lay">${t('thLayer')}</th><th class="nm">${t('thName')}</th><th>${t('thType')}</th><th class="ad">${t('thAddr')}</th></tr></thead>`;
+const pluralP = n => tp('fixtures', n);
+const TH_L = () => `<thead><tr><th class="fid">${tp('thFid')}</th><th class="nm">${tp('thName')}</th><th>${tp('thType')}</th><th class="un">${tp('thUniv')}</th><th class="ad">${tp('thAddr')}</th></tr></thead>`;
+const TH_U = () => `<thead><tr><th class="fid">${tp('thFid')}</th><th class="lay">${tp('thLayer')}</th><th class="nm">${tp('thName')}</th><th>${tp('thType')}</th><th class="ad">${tp('thAddr')}</th></tr></thead>`;
 const rowL = f => `<tr data-k="${esc(fxKey(f))}" title="${esc(t('hideRow'))}"><td class="fid">${esc(f.id)}</td><td class="nm">${esc(f.name)}</td><td class="ty">${esc(f.tshort)}</td><td class="un">${f.univ ?? '—'}</td><td class="ad">${pad3(f.addr)}</td></tr>`;
 const rowU = f => `<tr data-k="${esc(fxKey(f))}" title="${esc(t('hideRow'))}"><td class="fid">${esc(f.id)}</td><td class="lay">${esc(f.layer)}</td><td class="nm">${esc(f.name)}</td><td class="ty">${esc(f.tshort)}</td><td class="ad">${pad3(f.addr)}</td></tr>`;
 
@@ -960,7 +981,7 @@ function pack(groups, firstCap, pageH, ncol) {
       if (used + need > cap && used > 0) newCol();
       const n = Math.max(1, Math.floor((cap - used - HEAD - THEAD) / ROW));
       const chunk = rows.slice(i, i + n);
-      cur.push(`<section class="grp"><h3><span>${esc(title)}${cont ? ` <em>${t('cont')}</em>` : ''}</span><small>${esc(sub)}</small></h3><table>${thead}<tbody>${chunk.join('')}</tbody></table></section>`);
+      cur.push(`<section class="grp"><h3><span>${esc(title)}${cont ? ` <em>${tp('cont')}</em>` : ''}</span><small>${esc(sub)}</small></h3><table>${thead}<tbody>${chunk.join('')}</tbody></table></section>`);
       used += HEAD + THEAD + ROW * chunk.length + GAP;
       i += chunk.length; cont = true;
       if (i < rows.length) newCol();
@@ -975,20 +996,20 @@ const colsHTML = cols => `<div class="cols">${cols.map(c => `<div class="col">${
 const noteHTML = note => note ? `<div class="note">${note.split('\n').map(l => `<div class="ln">${l ? esc(l) : '&nbsp;'}</div>`).join('')}</div>` : '';
 // « Imprimé le » + « Exporté le » (date fournie par le plugin ou date du fichier CSV, non modifiable)
 function metaHTML(today) {
-  let h = t('printed', today);
+  let h = tp('printed', today);
   const d = state.exported;
   if ($('#optExport').checked && d instanceof Date && !isNaN(d)) {
-    h += '<br>' + t('exported', d.toLocaleDateString(t('locale')),
-                    d.toLocaleTimeString(t('locale'), { hour: '2-digit', minute: '2-digit' }));
+    h += '<br>' + tp('exported', d.toLocaleDateString(tp('locale')),
+                    d.toLocaleTimeString(tp('locale'), { hour: '2-digit', minute: '2-digit' }));
   }
   return `<div class="meta">${h}</div>`;
 }
 function summaryHTML(fx, A, titre, lieu, note, show = { layer: true, univ: true, type: true }) {
-  const today = new Date().toLocaleDateString(t('locale'));
+  const today = new Date().toLocaleDateString(tp('locale'));
   let warns = '';
-  if (A.dups.length) warns += `<p class="warn"><b>${t('warnDup')}</b> ${A.dups.map(([u, a, x, y]) => `${u}.${pad3(a)} (${esc(x)} / ${esc(y)})`).join(', ')}</p>`;
-  if (A.overlaps.length) warns += `<p class="warn"><b>${t('warnOvl')}</b> ${A.overlaps.map(([u, a, x, y]) => `${u}.${pad3(a)} (${esc(x)} / ${esc(y)})`).join(', ')}</p>`;
-  if (A.unpatched.length) warns += `<p class="warn"><b>${t('warnUnp', A.unpatched.length)}</b> ${A.unpatched.map(f => esc(f.id)).join(', ')}</p>`;
+  if (A.dups.length) warns += `<p class="warn"><b>${tp('warnDup')}</b> ${A.dups.map(([u, a, x, y]) => `${u}.${pad3(a)} (${esc(x)} / ${esc(y)})`).join(', ')}</p>`;
+  if (A.overlaps.length) warns += `<p class="warn"><b>${tp('warnOvl')}</b> ${A.overlaps.map(([u, a, x, y]) => `${u}.${pad3(a)} (${esc(x)} / ${esc(y)})`).join(', ')}</p>`;
+  if (A.unpatched.length) warns += `<p class="warn"><b>${tp('warnUnp', A.unpatched.length)}</b> ${A.unpatched.map(f => esc(f.id)).join(', ')}</p>`;
   const layRows = A.layers.map(l => {
     const g = fx.filter(f => f.layer === l).sort((a, b) => cmpKey(a.key, b.key));
     const types = [...new Set(g.map(f => f.tname))].join(', ');
@@ -1006,19 +1027,19 @@ function summaryHTML(fx, A, titre, lieu, note, show = { layer: true, univ: true,
   }).sort((a, b) => b.n - a.n || a.tn.localeCompare(b.tn));
   const typRows = types.map(x => `<tr><td class="nm">${esc(x.tn)}</td><td class="num">${x.n}</td><td class="ty">${esc(x.ls.join(', '))}</td><td class="num">${esc(x.us.join(', ') || '—')}</td></tr>`).join('');
   const blocks = [];
-  if (show.layer) blocks.push(`<div class="wide"><h2>${t('sumLayer')}</h2>
-<table class="summary"><thead><tr><th style="width:32mm">${t('thLayer')}</th><th class="num" style="width:12mm">${t('thQty')}</th><th>${t('thTypes')}</th><th class="num" style="width:22mm">${t('thUnivFull')}</th></tr></thead><tbody>${layRows}</tbody></table></div>`);
-  if (show.univ) blocks.push(`<div><h2>${t('sumUniv')}</h2>
-<table class="summary"><thead><tr><th class="num" style="width:14mm">${t('thUniv')}</th><th class="num" style="width:12mm">${t('thQty')}</th><th class="num" style="width:36mm">${t('thStart')}</th><th>${t('thLayers')}</th></tr></thead><tbody>${uniRows}</tbody></table></div>`);
-  if (show.type) blocks.push(`<div><h2>${t('sumType')}</h2>
-<table class="summary"><thead><tr><th>${t('thFxType')}</th><th class="num" style="width:12mm">${t('thQty')}</th><th>${t('thLayers')}</th><th class="num" style="width:20mm">${t('thUnivFull')}</th></tr></thead><tbody>${typRows}</tbody></table></div>`);
+  if (show.layer) blocks.push(`<div class="wide"><h2>${tp('sumLayer')}</h2>
+<table class="summary"><thead><tr><th style="width:32mm">${tp('thLayer')}</th><th class="num" style="width:12mm">${tp('thQty')}</th><th>${tp('thTypes')}</th><th class="num" style="width:22mm">${tp('thUnivFull')}</th></tr></thead><tbody>${layRows}</tbody></table></div>`);
+  if (show.univ) blocks.push(`<div><h2>${tp('sumUniv')}</h2>
+<table class="summary"><thead><tr><th class="num" style="width:14mm">${tp('thUniv')}</th><th class="num" style="width:12mm">${tp('thQty')}</th><th class="num" style="width:36mm">${tp('thStart')}</th><th>${tp('thLayers')}</th></tr></thead><tbody>${uniRows}</tbody></table></div>`);
+  if (show.type) blocks.push(`<div><h2>${tp('sumType')}</h2>
+<table class="summary"><thead><tr><th>${tp('thFxType')}</th><th class="num" style="width:12mm">${tp('thQty')}</th><th>${tp('thLayers')}</th><th class="num" style="width:20mm">${tp('thUnivFull')}</th></tr></thead><tbody>${typRows}</tbody></table></div>`);
   const head = `<header class="top"><div><h1>${esc(titre)}</h1>${lieu ? `<div class="sub">${esc(lieu)}</div>` : ''}</div>${noteHTML(note)}
 ${metaHTML(today)}</header>
 <div class="kpis">
-<div class="kpi"><b>${fx.length}</b><span>${t('kpiFix')}</span></div>
-<div class="kpi"><b>${A.layers.length}</b><span>${t('kpiLayers')}</span></div>
-<div class="kpi"><b>${A.univs.length}</b><span>${t('kpiUniv')}</span></div>
-<div class="kpi"><b>${A.ntypes}</b><span>${t('kpiTypes')}</span></div>
+<div class="kpi"><b>${fx.length}</b><span>${tp('kpiFix')}</span></div>
+<div class="kpi"><b>${A.layers.length}</b><span>${tp('kpiLayers')}</span></div>
+<div class="kpi"><b>${A.univs.length}</b><span>${tp('kpiUniv')}</span></div>
+<div class="kpi"><b>${A.ntypes}</b><span>${tp('kpiTypes')}</span></div>
 </div>${warns}`;
   return { head, blocks };
 }
@@ -1101,7 +1122,7 @@ function renderLabels() {
   if (G.cut) {
     pagesEl.innerHTML = sheets.map((g, i) =>
       `<div class="sheet A3P"><div class="lgrid" style="--cols:${cols};--w:${w}mm;--h:${h}mm">${g.map(one).join('')}</div>` +
-      `<div class="lfoot"><span>${esc(state.fileName)}</span><span>${esc(t('lbFoot', i + 1, n))}</span></div></div>`).join('');
+      `<div class="lfoot"><span>${esc(state.fileName)}</span><span>${esc(tp('lbFoot', i + 1, n))}</span></div></div>`).join('');
     $('#pagesize').textContent = '@page { size: A3 portrait; margin: 0; }';
   } else {
     // planche adhésive : pas de pied de page (il tomberait sur les étiquettes)
@@ -1157,6 +1178,7 @@ function refreshColorUI(layers, colors, counts) {
 function render() {
   const pagesEl = $('#pages');
   if (!state.fx) return;
+  pagesEl.dir = PLANG === 'ar' ? 'rtl' : 'ltr'; pagesEl.lang = PLANG;
   document.body.dataset.tab = state.tab;
   if (state.tab === 'labels') return renderLabels();
   if (state.tab === 'diff') return renderDiff();
@@ -1165,7 +1187,8 @@ function render() {
   const A = analyse(fx), fmt = state.fmt;
   const { H, ncol } = FORMATS[fmt];
   const pageH = H - 2 * MARGIN - 7;
-  const titre = $('#titre').value.trim() || t('defTitle');
+  let titre = $('#titre').value.trim() || tp('defTitle');
+  if (isDefTitle(titre)) titre = tp('defTitle');
   const lieu = $('#lieu').value.trim();
   const note = [1, 2, 3, 4].map(i => $('#note' + i).value.trim()).join('\n').replace(/\n+$/, '');
   const wantL = $('#optLayer').checked, wantU = $('#optUniv').checked;
@@ -1185,20 +1208,20 @@ function render() {
 
   const gL = A.layers.map(l => {
     const g = fx.filter(f => f.layer === l).sort((a, b) => cmpKey(a.key, b.key));
-    return [l, plural(g.length), g.map(rowL), TH_L()];
+    return [l, pluralP(g.length), g.map(rowL), TH_L()];
   });
   const gU = A.univs.map(u => {
     const g = A.patched.filter(f => f.univ === u).sort((a, b) => a.addr - b.addr);
-    return [t('univ') + ' ' + u, plural(g.length), g.map(rowU), TH_U()];
+    return [tp('univ') + ' ' + u, pluralP(g.length), g.map(rowU), TH_U()];
   });
-  if (A.unpatched.length) gU.push([t('unpatched'), plural(A.unpatched.length), [...A.unpatched].sort((a, b) => cmpKey(a.key, b.key)).map(rowU), TH_U()]);
+  if (A.unpatched.length) gU.push([tp('unpatched'), pluralP(A.unpatched.length), [...A.unpatched].sort((a, b) => cmpKey(a.key, b.key)).map(rowU), TH_U()]);
 
   // assemblage des pages
   const sheets = [...pre];
   let page1 = cur, page1Room = pageH - used;
   const sections = [];
-  if (wantL) sections.push([t('secLayer'), gL]);
-  if (wantU) sections.push([t('secUniv'), gU]);
+  if (wantL) sections.push([tp('secLayer'), gL]);
+  if (wantU) sections.push([tp('secUniv'), gU]);
 
   sections.forEach(([title, groups], si) => {
     // chaque section (patch par layer, patch par univers) commence en haut d'une page
@@ -1221,11 +1244,11 @@ function render() {
   const dsh = ($('#diffInSheet').checked && state.ref) ? diffSheets(fmt).sheets : [];
   const all = [...dsh, ...sheets], n = all.length;
   pagesEl.innerHTML = all.map((s, i) =>
-    `<div class="sheet ${fmt}">${s}<div class="pfoot"><span>${esc(state.fileName)}</span><span>${esc(i < dsh.length ? t('diffFoot') : foot)} · p. ${i + 1}/${n}</span></div></div>`).join('');
+    `<div class="sheet ${fmt}">${s}<div class="pfoot"><span>${esc(state.fileName)}</span><span>${esc(i < dsh.length ? tp('diffFoot') : foot)} · p. ${i + 1}/${n}</span></div></div>`).join('');
   $('#pagesize').textContent = `@page { size: ${fmt} landscape; margin: 0; }`;
   applyZoom();
   $('#pageInfo').textContent = t('pageInfo', state.fileName, n, fmt);
-  document.title = `${titre} — ${t('docTitle')}`;
+  document.title = `${titre} — ${tp('docTitle')}`;
 }
 
 // ───────────── plan d'occupation des univers ─────────────
@@ -1264,14 +1287,14 @@ function univMapPages(A, fmt) {
       if (c <= 512 && !occ[c]) { if (!f0) f0 = c; } else if (f0) { free.push([f0, c - 1]); f0 = 0; }
     }
     const info = known
-      ? `<span>${esc(t('mapUsed', used))}</span><span class="free">${esc(free.length ? t('mapFree') + ' ' + [...free].sort((x, y) => (y[1] - y[0]) - (x[1] - x[0]) || x[0] - y[0]).slice(0, 5)
-        .map(([a, b]) => `${pad3(a)}–${pad3(b)} (${b - a + 1})`).join(' · ') + (free.length > 5 ? ' · …' : '') : t('mapFull'))}</span>`
-      : `<span>${esc(plural(g.length))}</span>`;
+      ? `<span>${esc(tp('mapUsed', used))}</span><span class="free">${esc(free.length ? tp('mapFree') + ' ' + [...free].sort((x, y) => (y[1] - y[0]) - (x[1] - x[0]) || x[0] - y[0]).slice(0, 5)
+        .map(([a, b]) => `${pad3(a)}–${pad3(b)} (${b - a + 1})`).join(' · ') + (free.length > 5 ? ' · …' : '') : tp('mapFull'))}</span>`
+      : `<span>${esc(pluralP(g.length))}</span>`;
     const ticks = [1, 65, 129, 193, 257, 321, 385, 449, 512].map(x => `<span style="left:${pc(x - .5)}">${x}</span>`).join('');
-    return `<div class="umap"><div class="uh"><b>${esc(t('univ'))} ${u}</b>${info}</div><div class="bar">${segs}${ovl}</div><div class="scale">${ticks}</div></div>`;
+    return `<div class="umap"><div class="uh"><b>${esc(tp('univ'))} ${u}</b>${info}</div><div class="bar">${segs}${ovl}</div><div class="scale">${ticks}</div></div>`;
   });
-  const legend = [anyEst ? t('mapEst') : '', anyOvl ? t('mapOvl') : ''].filter(Boolean).join(' ');
-  const head = `<h2>${esc(t('secMap'))}</h2>` + (legend ? `<p class="maplegend">${esc(legend)}</p>` : '');
+  const legend = [anyEst ? tp('mapEst') : '', anyOvl ? tp('mapOvl') : ''].filter(Boolean).join(' ');
+  const head = `<h2>${esc(tp('secMap'))}</h2>` + (legend ? `<p class="maplegend">${esc(legend)}</p>` : '');
   const pages = [];
   let cur = head, room = pageH - H2 - (legend ? 5 : 0);
   for (const b of blocks) {
@@ -1301,11 +1324,11 @@ function diffPatch(oldFx, newFx) {
     const o = O.get(k);
     if (!o) { add.push(f); continue; }
     const ch = [];
-    if (ptxt(o) !== ptxt(f)) ch.push([t('dAddr'), ptxt(o), ptxt(f)]);
-    if (o.tname !== f.tname) ch.push([t('dType'), o.tshort, f.tshort]);
-    if (o.layer !== f.layer) ch.push([t('dLayer'), o.layer, f.layer]);
-    if (o.name !== f.name) ch.push([t('dName'), o.name, f.name]);
-    if (o.nch && f.nch && o.nch !== f.nch) ch.push([t('dNch'), o.nch, f.nch]);
+    if (ptxt(o) !== ptxt(f)) ch.push([tp('dAddr'), ptxt(o), ptxt(f)]);
+    if (o.tname !== f.tname) ch.push([tp('dType'), o.tshort, f.tshort]);
+    if (o.layer !== f.layer) ch.push([tp('dLayer'), o.layer, f.layer]);
+    if (o.name !== f.name) ch.push([tp('dName'), o.name, f.name]);
+    if (o.nch && f.nch && o.nch !== f.nch) ch.push([tp('dNch'), o.nch, f.nch]);
     if (ch.length) mod.push([f, ch]); else same++;
   }
   for (const [k, o] of O) if (!N.has(k)) del.push(o);
@@ -1315,29 +1338,31 @@ function diffPatch(oldFx, newFx) {
 }
 const fmtDT = d => (d instanceof Date && !isNaN(d))
   ? d.toLocaleDateString(t('locale')) + ' ' + d.toLocaleTimeString(t('locale'), { hour: '2-digit', minute: '2-digit' }) : '';
+const fmtDTp = d => (d instanceof Date && !isNaN(d))
+  ? d.toLocaleDateString(tp('locale')) + ' ' + d.toLocaleTimeString(tp('locale'), { hour: '2-digit', minute: '2-digit' }) : '';
 function diffSheets(fmt) {
   const R = state.ref;
   const D = diffPatch(R.fx, state.fx);
   const { H, ncol } = FORMATS[fmt], pageH = H - 2 * MARGIN - 7;
-  const side = (name, d) => esc(name) + (fmtDT(d) ? ` <small>(${esc(fmtDT(d))})</small>` : '');
-  const head = `<header class="top"><div><h1>${esc(t('diffTitle'))}</h1><div class="sub">${side(R.name, R.exported)} → ${side(state.fileName, state.exported)}</div></div>
-<div class="meta">${t('printed', new Date().toLocaleDateString(t('locale')))}</div></header>
+  const side = (name, d) => esc(name) + (fmtDTp(d) ? ` <small>(${esc(fmtDTp(d))})</small>` : '');
+  const head = `<header class="top"><div><h1>${esc(tp('diffTitle'))}</h1><div class="sub">${side(R.name, R.exported)} → ${side(state.fileName, state.exported)}</div></div>
+<div class="meta">${tp('printed', new Date().toLocaleDateString(tp('locale')))}</div></header>
 <div class="kpis">
-<div class="kpi mod"><b>${D.mod.length}</b><span>${t('kMod')}</span></div>
-<div class="kpi add"><b>${D.add.length}</b><span>${t('kAdd')}</span></div>
-<div class="kpi del"><b>${D.del.length}</b><span>${t('kDel')}</span></div>
-<div class="kpi"><b>${D.same}</b><span>${t('kSame')}</span></div>
+<div class="kpi mod"><b>${D.mod.length}</b><span>${tp('kMod')}</span></div>
+<div class="kpi add"><b>${D.add.length}</b><span>${tp('kAdd')}</span></div>
+<div class="kpi del"><b>${D.del.length}</b><span>${tp('kDel')}</span></div>
+<div class="kpi"><b>${D.same}</b><span>${tp('kSame')}</span></div>
 </div>`;
-  const TH_D = `<thead><tr><th class="fid">${t('thFid')}</th><th class="nm">${t('thName')}</th><th class="dch">${t('thChange')}</th><th>${t('thFrom')}</th><th>${t('thTo')}</th></tr></thead>`;
-  const TH_X = `<thead><tr><th class="fid">${t('thFid')}</th><th class="lay">${t('thLayer')}</th><th class="nm">${t('thName')}</th><th>${t('thType')}</th><th class="ad" style="width:15mm">${t('thPatch')}</th></tr></thead>`;
+  const TH_D = `<thead><tr><th class="fid">${tp('thFid')}</th><th class="nm">${tp('thName')}</th><th class="dch">${tp('thChange')}</th><th>${tp('thFrom')}</th><th>${tp('thTo')}</th></tr></thead>`;
+  const TH_X = `<thead><tr><th class="fid">${tp('thFid')}</th><th class="lay">${tp('thLayer')}</th><th class="nm">${tp('thName')}</th><th>${tp('thType')}</th><th class="ad" style="width:15mm">${tp('thPatch')}</th></tr></thead>`;
   const rowX = f => `<tr><td class="fid">${esc(f.id)}</td><td class="lay">${esc(f.layer)}</td><td class="nm">${esc(f.name)}</td><td class="ty">${esc(f.tshort)}</td><td class="ad">${ptxt(f)}</td></tr>`;
   const modRows = D.mod.flatMap(([f, ch]) => ch.map((c, i) =>
     `<tr><td class="fid">${i ? '' : esc(f.id)}</td><td class="nm">${i ? '' : esc(f.name)}</td><td class="dch">${esc(c[0])}</td><td class="dfrom">${esc(c[1])}</td><td class="dto">${esc(c[2])}</td></tr>`));
   const groups = [];
-  if (D.mod.length) groups.push([t('gMod'), plural(D.mod.length), modRows, TH_D]);
-  if (D.add.length) groups.push([t('gAdd'), plural(D.add.length), D.add.map(rowX), TH_X]);
-  if (D.del.length) groups.push([t('gDel'), plural(D.del.length), D.del.map(rowX), TH_X]);
-  if (!groups.length) return { D, sheets: [head + `<p class="warn">${esc(t('diffNone'))}</p>`] };
+  if (D.mod.length) groups.push([tp('gMod'), pluralP(D.mod.length), modRows, TH_D]);
+  if (D.add.length) groups.push([tp('gAdd'), pluralP(D.add.length), D.add.map(rowX), TH_X]);
+  if (D.del.length) groups.push([tp('gDel'), pluralP(D.del.length), D.del.map(rowX), TH_X]);
+  if (!groups.length) return { D, sheets: [head + `<p class="warn">${esc(tp('diffNone'))}</p>`] };
   const pages = pack(groups, pageH - measureMM(head, fmt), pageH, ncol);
   return { D, sheets: pages.map((cols, i) => (i ? '' : head) + colsHTML(cols)) };
 }
@@ -1346,7 +1371,7 @@ function renderDiff() {
   if (!state.ref) { pagesEl.innerHTML = `<div class="empty"><div>${esc(t('diffNoRef'))}</div></div>`; $('#pageInfo').textContent = state.fileName; return; }
   const { sheets } = diffSheets(fmt), n = sheets.length;
   pagesEl.innerHTML = sheets.map((s, i) =>
-    `<div class="sheet ${fmt}">${s}<div class="pfoot"><span>${esc(state.fileName)}</span><span>${esc(t('diffFoot'))} · p. ${i + 1}/${n}</span></div></div>`).join('');
+    `<div class="sheet ${fmt}">${s}<div class="pfoot"><span>${esc(state.fileName)}</span><span>${esc(tp('diffFoot'))} · p. ${i + 1}/${n}</span></div></div>`).join('');
   $('#pagesize').textContent = `@page { size: ${fmt} landscape; margin: 0; }`;
   applyZoom();
   $('#pageInfo').textContent = t('diffInfo', state.ref.name, state.fileName, n);
@@ -1424,7 +1449,7 @@ function saveSheet() {
   const chk = {}; CHECKS.forEach(id => { chk[id] = $('#' + id).checked; });
   const st = {
     map: state.map, notes: state.notes, hidden: [...state.hidden], lbOff: [...state.lbOff], colors: state.colors,
-    opts: { chk, fmt: state.fmt, lbSize: state.lbSize, lbCustom: store.get('lbCustom', null), tab: state.tab },
+    opts: { chk, fmt: state.fmt, plang: PLANG_SET ? PLANG : null, lbSize: state.lbSize, lbCustom: store.get('lbCustom', null), tab: state.tab },
     ref: state.ref ? { csv: state.ref.csv, name: state.ref.name, exported: iso(state.ref.exported), map: state.ref.map } : null,
   };
   const doc = PRISTINE.cloneNode(true);
@@ -1453,6 +1478,7 @@ function applySaved(st, name, savedAt, csv) {
   const o = st.opts || {};
   for (const [id, v] of Object.entries(o.chk || {})) { const el = $('#' + id); if (el) { el.checked = !!v; store.set(id, !!v); } }
   if (o.fmt) setFmt(o.fmt);
+  if (o.plang) setPlang(o.plang);
   if (o.lbCustom) { store.set('lbCustom', o.lbCustom); fillCustom(); }
   if (o.lbSize) setLbSize(o.lbSize);
   if (o.tab) setTab(o.tab);
@@ -1692,10 +1718,19 @@ document.body.dataset.tab = state.tab;
 document.querySelectorAll('#tabs button').forEach(b => b.classList.toggle('on', b.dataset.v === state.tab));
 
 // langue
+function setPlang(l, explicit = true) {
+  if (!I18N[l]) return;
+  PLANG = l; $('#plang').value = l;
+  if (explicit) { PLANG_SET = true; store.set('plang', l); }
+  if (state.fx) render();
+}
+$('#plang').value = PLANG;
+$('#plang').addEventListener('change', e => setPlang(e.target.value));
 function setLang(l) {
   const ti = $('#titre');
   if (Object.values(I18N).some(d => d.defTitle === ti.value.trim())) { ti.value = I18N[l].defTitle; store.set('titre', ti.value); }
   LANG = l; store.set('lang', l);
+  if (!PLANG_SET) setPlang(l, false);
   applyI18n(); setDropText();
   refreshRefUI();
   if (state.fx) { refreshHideUI(); showInfo(); render(); } else { $('#pageInfo').textContent = t('noFile'); }
