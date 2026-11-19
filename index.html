@@ -36,9 +36,12 @@ aside { background: var(--panel); border-right: 1px solid var(--line); overflow-
 .brand { display: flex; align-items: center; gap: 12px; }
 .brand .dot { width: 12px; height: 12px; border-radius: 50%; background: var(--accent); flex: none; margin-top: 5px; align-self: flex-start; }
 .brand h1 { font-size: 15px; font-weight: 600; margin: 0; letter-spacing: 0; }
+.brandlink { display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0; color: inherit; text-decoration: none; }
+.brandlink:hover h1 { text-decoration: underline; }
+.dl { display: flex; gap: 8px; }
+.dl a { flex: 1; text-align: center; text-decoration: none; }
 .brand p { margin: 0; font-size: 12px; color: var(--muted); }
-.seg.lang { margin-left: auto; grid-template-columns: auto auto; flex: none; align-self: flex-start; }
-.seg.lang button { padding: 4px 9px; font-size: 12px; letter-spacing: .5px; }
+select.lang { margin-inline-start: auto; flex: none; align-self: flex-start; font: inherit; font-size: 12px; color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 4px 6px; max-width: 8.5em; }
 .drop { border: 1.5px dashed var(--line); border-radius: 12px; background: var(--drop); padding: 22px 16px; text-align: center; cursor: pointer; transition: border-color .15s, background .15s; }
 .drop:hover, .drop.over { border-color: var(--accent); }
 .drop b { display: block; font-size: 14px; margin-bottom: 4px; }
@@ -99,6 +102,10 @@ body[data-tab="patch"] aside [data-tab]:not([data-tab~="patch"]),
 body[data-tab="labels"] aside [data-tab]:not([data-tab~="labels"]),
 body[data-tab="diff"] aside [data-tab]:not([data-tab~="diff"]) { display: none !important; }
 .tabs button { white-space: nowrap; }
+/* arabe (droite à gauche) : adresses, numéros et plages restent écrits de gauche à droite */
+[dir=rtl] .sheet td.num, [dir=rtl] .sheet td.ad, [dir=rtl] .sheet td.fid, [dir=rtl] .sheet td.dfrom, [dir=rtl] .sheet td.dto,
+[dir=rtl] .lbl .big { direction: ltr; unicode-bidi: isolate; }
+[dir=rtl] .sheet td.num, [dir=rtl] .sheet td.fid { text-align: right; }
 dialog#mapDlg { border: 1px solid var(--line); border-radius: 12px; padding: 18px 20px; max-width: 520px; width: calc(100% - 32px); background: var(--panel, #fff); color: var(--ink); }
 dialog#mapDlg::backdrop { background: rgba(0,0,0,.45); }
 dialog#mapDlg h2 { margin: 0 0 6px; font-size: 17px; }
@@ -228,17 +235,24 @@ dialog#mapDlg h2 { margin: 0 0 6px; font-size: 17px; }
 <div class="app">
   <aside>
     <div class="brand">
-      <div class="dot" aria-hidden="true"></div>
-      <div><h1 data-i18n="brandTitle">Give Me The Patch</h1><p data-i18n="brandSub">Export CSV grandMA → feuille imprimable</p></div>
-      <div class="seg lang" id="lang" role="group" aria-label="Langue / Language">
-        <button type="button" data-v="fr" class="on">FR</button>
-        <button type="button" data-v="en">EN</button>
-      </div>
+      <a class="brandlink" href="https://github.com/mart1ver/GiveMeThePatch" target="_blank" rel="noopener" data-i18n-title="repoLink" title="Le projet sur GitHub">
+        <div class="dot" aria-hidden="true"></div>
+        <div><h1 data-i18n="brandTitle">Give Me The Patch</h1><p data-i18n="brandSub">Patch → feuille et étiquettes imprimables</p></div>
+      </a>
+      <select class="lang" id="lang" aria-label="Langue / Language">
+        <option value="fr">FR · Français</option>
+        <option value="en">EN · English</option>
+        <option value="es">ES · Español</option>
+        <option value="de">DE · Deutsch</option>
+        <option value="ja">JA · 日本語</option>
+        <option value="ru">RU · Русский</option>
+        <option value="ar">AR · العربية</option>
+      </select>
     </div>
 
     <label class="drop" id="drop" tabindex="0">
       <input type="file" id="file" accept=".csv,.txt,.html,.htm,text/csv,text/html" hidden>
-      <div id="dropText"><b data-i18n="dropTitle">Déposer l'export CSV ici</b><span data-i18n="dropSub">ou cliquer pour choisir un fichier</span></div>
+      <div id="dropText"><b data-i18n="dropTitle">Déposer le patch ici</b><span data-i18n="dropSub">CSV ou .html — ou cliquer pour choisir un fichier</span></div>
     </label>
 
     <fieldset data-tab="patch">
@@ -276,9 +290,9 @@ dialog#mapDlg h2 { margin: 0 0 6px; font-size: 17px; }
       <legend data-i18n="legLabels">Étiquettes</legend>
       <select id="lbSize" class="lbsel" aria-label="Format">
         <optgroup label="A3 à découper (scotch)" data-i18n-label="lbCutGrp">
-          <option value="40x30">4 × 3 cm — 78 / planche</option>
-          <option value="30x40">3 × 4 cm — 81 / planche</option>
-          <option value="50x20">5 × 2 cm — 95 / planche</option>
+          <option value="40x30">4 × 3 cm — 78</option>
+          <option value="30x40">3 × 4 cm — 81</option>
+          <option value="50x20">5 × 2 cm — 95</option>
         </optgroup>
         <optgroup label="Planches adhésives A4" data-i18n-label="lbAdhGrp">
           <option value="L7651">Avery L7651 · 38,1 × 21,2 mm — 65</option>
@@ -361,6 +375,14 @@ dialog#mapDlg h2 { margin: 0 0 6px; font-size: 17px; }
     <p class="hint" id="printHint" data-i18n-html="printHint">Dans la boîte d'impression : destination « Enregistrer en PDF » ou l'imprimante, marges <b>Aucune</b>, « Graphiques d'arrière-plan » coché.</p>
 
     <div class="spacer"></div>
+    <fieldset>
+      <legend data-i18n="legPlugins">Plugins pour la console</legend>
+      <div class="dl">
+        <a class="btn ghost" href="https://github.com/mart1ver/GiveMeThePatch/raw/main/grandma2/GiveMeThePatch_grandMA2.zip" download>grandMA2</a>
+        <a class="btn ghost" href="https://github.com/mart1ver/GiveMeThePatch/raw/main/grandma3/GiveMeThePatch_grandMA3.zip" download>grandMA3</a>
+      </div>
+      <p class="hint2" data-i18n="pluginsHint">Dézipper à la racine de la clé USB, puis dans le pool Plugins de la console : Import → GiveMeThePatch.</p>
+    </fieldset>
     <div class="foot" data-i18n="foot">Le fichier est lu dans le navigateur : rien n'est envoyé au serveur. Give Me The Patch, par Mart1ver.</div>
   </aside>
 
@@ -377,7 +399,7 @@ dialog#mapDlg h2 { margin: 0 0 6px; font-size: 17px; }
       <div class="zoom"><span data-i18n="zoom">Zoom</span><input type="range" id="zoom" min="20" max="100" value="45"><span id="zoomVal">45 %</span></div>
     </div>
     <div id="pages">
-      <div class="empty"><div><div class="big">◎</div><span data-i18n="emptyMsg">Charge un export CSV de la grandMA pour voir la feuille de patch.</span></div></div>
+      <div class="empty"><div><div class="big">◎</div><span data-i18n="emptyMsg">Charge un patch pour commencer : export grandMA2 ou grandMA3, WYSIWYG, Capture, ou feuille .html du plugin.</span></div></div>
     </div>
     <div id="measure"></div>
   </main>
@@ -415,8 +437,8 @@ const MARGIN = 14, ROW = 4.6, HEAD = 7, THEAD = 5, GAP = 4, H2 = 11;
 
 const I18N = {
   fr: {
-    brandTitle: 'Give Me The Patch', brandSub: 'Export CSV grandMA → feuille de patch imprimable',
-    dropTitle: "Déposer l'export CSV ici", dropSub: 'ou cliquer pour choisir un fichier',
+    brandTitle: 'Give Me The Patch', brandSub: 'Patch → feuille et étiquettes imprimables',
+    dropTitle: 'Déposer le patch ici', dropSub: 'CSV ou .html — ou cliquer pour choisir un fichier',
     legHeader: 'En-tête', lblTitle: 'Titre', lblPlace: 'Lieu / sous-titre', lblNotes: 'Cartouche (texte libre)',
     line1: 'Ligne 1', line2: 'Ligne 2', line3: 'Ligne 3', line4: 'Ligne 4',
     legFormat: 'Format papier (paysage)', fmtA3: 'A3 · 3 colonnes', fmtA4: 'A4 · 2 colonnes',
@@ -434,12 +456,13 @@ const I18N = {
     mapAuto: "Numéroter les projecteurs sans numéro (dans l'ordre des adresses)", mapReset: 'Détection automatique', mapCancel: 'Annuler', mapApply: 'Appliquer', mapNeed: 'Choisis au moins la colonne Patch, ou Univers + Adresse.', mapNone: '— aucune —',
     mFid: 'Fix ID', mChid: 'Ch ID', mLayer: 'Layer / groupe', mName: 'Nom', mType: 'Type de projecteur', mPatch: 'Patch (univ.adresse)', mUniv: 'Univers (colonne à part)', mAddr: 'Adresse (colonne à part)', mNch: 'Nombre de canaux',
     unknownCols: "Colonnes non reconnues : choisis-les dans la fenêtre qui vient de s'ouvrir.", noIds: 'Aucun numéro de projecteur dans le fichier.', autoNum: 'Numéroter automatiquement',
+    legPlugins: 'Plugins pour la console', pluginsHint: 'Dézipper à la racine de la clé USB, puis dans le pool Plugins de la console : Import → GiveMeThePatch.', repoLink: 'Le projet sur GitHub',
     save: 'Enregistrer la feuille (.html)', saveHint: "Un seul fichier avec le patch, les annotations, les masquages et les réglages. Il s'ouvre dans n'importe quel navigateur.", fromSaved: 'Feuille enregistrée', hidePh: 'Fix ID ou nom…', hideBtn: 'Masquer', hideHint: "Ou cliquer sur une ligne de l'aperçu pour la masquer.", unhideAll: 'Tout réafficher', unhide: 'Réafficher', hideRow: 'Cliquer pour masquer ce projecteur', notFound: 'Aucun projecteur ne correspond.', stHidden: n => `${n} masqué${n > 1 ? 's' : ''} à la main`,
     legFile: 'Fichier', print: 'Imprimer / PDF',
     printHint: "Dans la boîte d'impression : destination « Enregistrer en PDF » ou l'imprimante, marges <b>Aucune</b>, « Graphiques d'arrière-plan » coché.",
     foot: "Le fichier est lu dans le navigateur : rien n'est envoyé au serveur. Give Me The Patch, par Mart1ver.",
-    zoom: 'Zoom', noFile: 'Aucun fichier chargé', emptyMsg: 'Charge un export CSV de la grandMA pour voir la feuille de patch.',
-    loaded: 'Fichier chargé', fromConsole: 'Patch lu sur la console', changeFile: 'Cliquer ou déposer un CSV pour en changer',
+    zoom: 'Zoom', noFile: 'Aucun fichier chargé', emptyMsg: 'Charge un patch pour commencer : export grandMA2 ou grandMA3, WYSIWYG, Capture, ou feuille .html du plugin.',
+    loaded: 'Fichier chargé', fromConsole: 'Patch lu sur la console', changeFile: 'Cliquer ou déposer un autre fichier pour en changer',
     readErr: 'Lecture impossible', emptyFile: 'Fichier vide.', noFixtures: 'Aucun projecteur trouvé dans le fichier.',
     noCols: h => `Colonnes introuvables. Il faut au minimum une colonne « Patch » (ou « DMX Universe » + « DMX Channel »). En-tête lu : ${h}`,
     noPatched: 'Aucun projecteur patché à afficher.',
@@ -458,8 +481,8 @@ const I18N = {
     defTitle: 'Patch lumière', docTitle: 'Give Me The Patch', locale: 'fr-FR',
   },
   en: {
-    brandTitle: 'Give Me The Patch', brandSub: 'grandMA CSV export → printable patch sheet',
-    dropTitle: 'Drop the CSV export here', dropSub: 'or click to choose a file',
+    brandTitle: 'Give Me The Patch', brandSub: 'Patch → printable sheet and labels',
+    dropTitle: 'Drop the patch here', dropSub: 'CSV or .html — or click to choose a file',
     legHeader: 'Header', lblTitle: 'Title', lblPlace: 'Venue / subtitle', lblNotes: 'Title block (free text)',
     line1: 'Line 1', line2: 'Line 2', line3: 'Line 3', line4: 'Line 4',
     legFormat: 'Paper size (landscape)', fmtA3: 'A3 · 3 columns', fmtA4: 'A4 · 2 columns',
@@ -477,12 +500,13 @@ const I18N = {
     mapAuto: 'Number fixtures that have no number (in address order)', mapReset: 'Automatic detection', mapCancel: 'Cancel', mapApply: 'Apply', mapNeed: 'Choose at least the Patch column, or Universe + Address.', mapNone: '— none —',
     mFid: 'Fix ID', mChid: 'Ch ID', mLayer: 'Layer / group', mName: 'Name', mType: 'Fixture type', mPatch: 'Patch (univ.address)', mUniv: 'Universe (own column)', mAddr: 'Address (own column)', mNch: 'Channel count',
     unknownCols: 'Columns not recognised: choose them in the window that just opened.', noIds: 'No fixture number in the file.', autoNum: 'Number them automatically',
+    legPlugins: 'Console plugins', pluginsHint: 'Unzip at the root of the USB stick, then in the console Plugins pool: Import → GiveMeThePatch.', repoLink: 'The project on GitHub',
     save: 'Save the sheet (.html)', saveHint: 'One file with the patch, notes, hidden fixtures and settings. It opens in any browser.', fromSaved: 'Saved sheet', hidePh: 'Fix ID or name…', hideBtn: 'Hide', hideHint: 'Or click a row in the preview to hide it.', unhideAll: 'Show all again', unhide: 'Show again', hideRow: 'Click to hide this fixture', notFound: 'No matching fixture.', stHidden: n => `${n} hidden manually`,
     legFile: 'File', print: 'Print / PDF',
     printHint: 'In the print dialog: destination “Save as PDF” or your printer, margins <b>None</b>, “Background graphics” checked.',
     foot: 'The file is read in your browser: nothing is sent to the server. Give Me The Patch, by Mart1ver.',
-    zoom: 'Zoom', noFile: 'No file loaded', emptyMsg: 'Load a grandMA CSV export to see the patch sheet.',
-    loaded: 'File loaded', fromConsole: 'Patch read from the console', changeFile: 'Click or drop a CSV to change it',
+    zoom: 'Zoom', noFile: 'No file loaded', emptyMsg: 'Load a patch to start: grandMA2 or grandMA3 export, WYSIWYG, Capture, or a plugin .html sheet.',
+    loaded: 'File loaded', fromConsole: 'Patch read from the console', changeFile: 'Click or drop another file to change it',
     readErr: 'Cannot read file', emptyFile: 'Empty file.', noFixtures: 'No fixtures found in the file.',
     noCols: h => `Columns not found. At least a “Patch” column (or “DMX Universe” + “DMX Channel”) is required. Header read: ${h}`,
     noPatched: 'No patched fixtures to display.',
@@ -500,17 +524,239 @@ const I18N = {
     alOk: '✓ No duplicate start address, everything is patched.',
     defTitle: 'Lighting patch', docTitle: 'Give Me The Patch', locale: 'en-GB',
   },
+  es: {
+    brandTitle: 'Give Me The Patch', brandSub: 'Patch → hoja y etiquetas para imprimir',
+    dropTitle: 'Suelta el patch aquí', dropSub: 'CSV o .html — o haz clic para elegir un archivo',
+    legHeader: 'Encabezado', lblTitle: 'Título', lblPlace: 'Lugar / subtítulo', lblNotes: 'Cajetín (texto libre)',
+    line1: 'Línea 1', line2: 'Línea 2', line3: 'Línea 3', line4: 'Línea 4',
+    legFormat: 'Tamaño de papel (horizontal)', fmtA3: 'A3 · 3 columnas', fmtA4: 'A4 · 2 columnas',
+    legContent: 'Contenido', optSumLayer: 'Resumen por layer', optSumUniv: 'Resumen por universo', optSumType: 'Resumen por tipo de aparato', sumType: 'Resumen por tipo', thFxType: 'Tipo de aparato', optLayer: 'Patch por layer', optUniv: 'Patch por universo', optHide: 'Ocultar los aparatos sin patch', legHidden: 'Aparatos ocultos', tabPatch: 'Hoja de patch', tabLabels: 'Etiquetas', legLabels: 'Etiquetas', lbFid: 'Fix ID', lbPatch: 'Dirección DMX (univ.dir)', lbName: 'Nombre', lbType: 'Tipo de aparato', lbChid: 'Ch ID', lbLayer: 'Nombre del layer (banda)', lbAnn: 'Zona de anotación', lbHint: 'Anotación: haz clic abajo de una etiqueta en la vista previa y escribe.', legColors: 'Layers a imprimir', lcHint: 'Desmarca un layer para no imprimir sus etiquetas. Haz clic en la muestra para cambiar su color.', lcPrint: 'Imprimir las etiquetas de este layer', colorsReset: 'Colores por defecto', annPh: 'nota…', lbInfo: (f, n, p) => `${f} — ${n} etiqueta${n > 1 ? 's' : ''}, ${p} hoja${p > 1 ? 's' : ''} A3`, lbFoot: (p, n) => `Etiquetas · hoja ${p}/${n}`, noLabels: 'Ningún aparato que etiquetar.',
+    lbCutGrp: 'A3 para recortar (cinta)', lbAdhGrp: 'Hojas adhesivas A4', lbCustom: 'Otra hoja (introducir sus medidas)…', lbOnly: 'Solo el Fix ID (legible de lejos)',
+    cuPage: 'Papel', cuCols: 'Columnas × filas', cuW: 'Ancho de etiqueta (mm)', cuH: 'Alto de etiqueta (mm)', cuLeft: 'Margen izquierdo (mm)', cuTop: 'Margen superior (mm)', cuPx: 'Paso horizontal (mm)', cuPy: 'Paso vertical (mm)',
+    lbAdhHint: 'Hoja adhesiva: imprimir al 100 % («Tamaño real»), márgenes Ninguno. Haz antes una prueba en papel normal y compárala a contraluz.',
+    lbInfoAdh: (f, n, p, nm) => `${f} — ${n} etiqueta${n > 1 ? 's' : ''}, ${p} hoja${p > 1 ? 's' : ''} ${nm}`,
+    tabDiff: 'Cambios', legDiff: 'Comparar con un patch anterior', refBtn: 'Cargar el patch anterior…', refHint: 'CSV, o hoja .html (del plugin o guardada). Los aparatos se reconocen por su Fix ID.', diffInSheet: 'Añadir los cambios al principio de la hoja de patch',
+    refOld: 'Anterior:', diffNoRef: 'Carga el patch anterior en el panel izquierdo para ver qué ha cambiado.', diffTitle: 'Cambios de patch', diffNone: 'Ningún cambio entre los dos patches.',
+    kMod: 'modificados', kAdd: 'añadidos', kDel: 'eliminados', kSame: 'sin cambios', gMod: 'Modificados', gAdd: 'Añadidos', gDel: 'Eliminados',
+    thChange: 'Cambio', thFrom: 'Antes', thTo: 'Después', thPatch: 'Patch', dAddr: 'Dirección', dType: 'Tipo', dLayer: 'Layer', dName: 'Nombre', dNch: 'Canales',
+    diffInfo: (o, n, p) => `${o} → ${n} — ${p} página${p > 1 ? 's' : ''}`, diffFoot: 'Cambios de patch', refErr: 'No se puede leer el patch anterior:', refNoCols: 'Columnas no reconocidas en el archivo anterior. Ábrelo primero como patch principal para elegir sus columnas.',
+    mapBtn: 'Columnas del archivo…', mapTitle: 'Columnas del archivo', mapHint: 'Indica qué columna contiene qué. Hace falta al menos el patch, o el universo y la dirección. La elección se recuerda para los archivos con el mismo encabezado.',
+    mapAuto: 'Numerar los aparatos sin número (en el orden de las direcciones)', mapReset: 'Detección automática', mapCancel: 'Cancelar', mapApply: 'Aplicar', mapNeed: 'Elige al menos la columna Patch, o Universo + Dirección.', mapNone: '— ninguna —',
+    mFid: 'Fix ID', mChid: 'Ch ID', mLayer: 'Layer / grupo', mName: 'Nombre', mType: 'Tipo de aparato', mPatch: 'Patch (univ.dirección)', mUniv: 'Universo (columna aparte)', mAddr: 'Dirección (columna aparte)', mNch: 'Número de canales',
+    unknownCols: 'Columnas no reconocidas: elígelas en la ventana que se acaba de abrir.', noIds: 'Ningún número de aparato en el archivo.', autoNum: 'Numerar automáticamente',
+    legPlugins: 'Plugins para la consola', pluginsHint: 'Descomprimir en la raíz de la memoria USB y, en el pool Plugins de la consola: Import → GiveMeThePatch.', repoLink: 'El proyecto en GitHub',
+    save: 'Guardar la hoja (.html)', saveHint: 'Un solo archivo con el patch, las notas, los aparatos ocultos y los ajustes. Se abre en cualquier navegador.', fromSaved: 'Hoja guardada', hidePh: 'Fix ID o nombre…', hideBtn: 'Ocultar', hideHint: 'O haz clic en una fila de la vista previa para ocultarla.', unhideAll: 'Mostrar todo', unhide: 'Mostrar', hideRow: 'Haz clic para ocultar este aparato', notFound: 'Ningún aparato coincide.', stHidden: n => `${n} oculto${n > 1 ? 's' : ''} a mano`,
+    legFile: 'Archivo', print: 'Imprimir / PDF',
+    printHint: 'En el cuadro de impresión: destino «Guardar como PDF» o la impresora, márgenes <b>Ninguno</b>, «Gráficos de fondo» marcado.',
+    foot: 'El archivo se lee en el navegador: no se envía nada al servidor. Give Me The Patch, por Mart1ver.',
+    zoom: 'Zoom', noFile: 'Ningún archivo cargado', emptyMsg: 'Carga un patch para empezar: exportación grandMA2 o grandMA3, WYSIWYG, Capture, u hoja .html del plugin.',
+    loaded: 'Archivo cargado', fromConsole: 'Patch leído en la consola', changeFile: 'Haz clic o suelta otro archivo para cambiarlo',
+    readErr: 'No se puede leer el archivo', emptyFile: 'Archivo vacío.', noFixtures: 'No hay aparatos en el archivo.',
+    noCols: h => `Columnas no encontradas. Hace falta al menos una columna «Patch» (o «DMX Universe» + «DMX Channel»). Encabezado leído: ${h}`,
+    noPatched: 'Ningún aparato con patch que mostrar.',
+    fixtures: n => `${n} aparato${n > 1 ? 's' : ''}`, cont: '(cont.)',
+    thFid: 'Fix ID', thName: 'Nombre', thType: 'Tipo', thUniv: 'Univ.', thAddr: 'Dir.', thLayer: 'Layer',
+    univ: 'Universo', unpatched: 'Sin patch', secLayer: 'Patch por layer', secUniv: 'Patch por universo',
+    warnDup: 'Direcciones de inicio duplicadas:', warnOvl: 'Rangos DMX que se solapan:', warnUnp: n => `${n} aparato(s) sin patch:`,
+    printed: d => `Impreso el ${d}`, exported: (d, h) => `Exportado el ${d} a las ${h}`, optExport: 'Mostrar la fecha de exportación',
+    kpiFix: 'Aparatos', kpiLayers: 'Layers', kpiUniv: 'Universos DMX', kpiTypes: 'Tipos de aparato',
+    sumLayer: 'Resumen por layer', sumUniv: 'Resumen por universo',
+    thQty: 'Cant.', thTypes: 'Tipos', thUnivFull: 'Universo', thStart: 'Direcciones de inicio', thLayers: 'Layers',
+    pageInfo: (f, n, fmt) => `${f} — ${n} página${n > 1 ? 's' : ''} ${fmt} horizontal`,
+    stFix: 'Aparatos', stLayers: 'Layers', stUniv: 'Universos', stTypes: 'Tipos',
+    alDup: n => `${n} dirección(es) duplicada(s)`, alOvl: n => `${n} rango(s) solapado(s)`, alUnp: n => `${n} sin patch`, alHidden: ' — ocultos en la hoja',
+    alOk: '✓ Ninguna dirección de inicio duplicada, todo tiene patch.',
+    defTitle: 'Patch de iluminación', docTitle: 'Give Me The Patch', locale: 'es-ES',
+  },
+  de: {
+    brandTitle: 'Give Me The Patch', brandSub: 'Patch → druckbare Liste und Etiketten',
+    dropTitle: 'Patch hier ablegen', dropSub: 'CSV oder .html — oder klicken, um eine Datei zu wählen',
+    legHeader: 'Kopfzeile', lblTitle: 'Titel', lblPlace: 'Ort / Untertitel', lblNotes: 'Schriftfeld (freier Text)',
+    line1: 'Zeile 1', line2: 'Zeile 2', line3: 'Zeile 3', line4: 'Zeile 4',
+    legFormat: 'Papierformat (quer)', fmtA3: 'A3 · 3 Spalten', fmtA4: 'A4 · 2 Spalten',
+    legContent: 'Inhalt', optSumLayer: 'Übersicht nach Layer', optSumUniv: 'Übersicht nach Universe', optSumType: 'Übersicht nach Gerätetyp', sumType: 'Übersicht nach Typ', thFxType: 'Gerätetyp', optLayer: 'Patch nach Layer', optUniv: 'Patch nach Universe', optHide: 'Ungepatchte Geräte ausblenden', legHidden: 'Ausgeblendete Geräte', tabPatch: 'Patchliste', tabLabels: 'Etiketten', legLabels: 'Etiketten', lbFid: 'Fix ID', lbPatch: 'DMX-Adresse (Univ.Adr)', lbName: 'Name', lbType: 'Gerätetyp', lbChid: 'Ch ID', lbLayer: 'Layer-Name (Band)', lbAnn: 'Notizfeld', lbHint: 'Notiz: in der Vorschau unten auf ein Etikett klicken und schreiben.', legColors: 'Zu druckende Layer', lcHint: 'Layer abwählen, um seine Etiketten nicht zu drucken. Auf das Farbfeld klicken, um die Farbe zu ändern.', lcPrint: 'Etiketten dieses Layers drucken', colorsReset: 'Standardfarben', annPh: 'Notiz…', lbInfo: (f, n, p) => `${f} — ${n} Etikett${n > 1 ? 'en' : ''}, ${p} A3-Bogen`, lbFoot: (p, n) => `Etiketten · Bogen ${p}/${n}`, noLabels: 'Keine Geräte zu etikettieren.',
+    lbCutGrp: 'A3 zum Ausschneiden (Klebeband)', lbAdhGrp: 'Klebeetiketten-Bögen A4', lbCustom: 'Anderer Bogen (Maße eingeben)…', lbOnly: 'Nur Fix ID (aus der Ferne lesbar)',
+    cuPage: 'Papier', cuCols: 'Spalten × Zeilen', cuW: 'Etikettenbreite (mm)', cuH: 'Etikettenhöhe (mm)', cuLeft: 'Rand links (mm)', cuTop: 'Rand oben (mm)', cuPx: 'Abstand horizontal (mm)', cuPy: 'Abstand vertikal (mm)',
+    lbAdhHint: 'Klebebogen: mit 100 % drucken („Tatsächliche Größe“), Ränder Keine. Zuerst auf Normalpapier testen und gegen das Licht vergleichen.',
+    lbInfoAdh: (f, n, p, nm) => `${f} — ${n} Etikett${n > 1 ? 'en' : ''}, ${p} Bogen ${nm}`,
+    tabDiff: 'Änderungen', legDiff: 'Mit einem älteren Patch vergleichen', refBtn: 'Älteren Patch laden…', refHint: 'CSV oder .html-Liste (Plugin oder gespeichert). Geräte werden über ihre Fix ID zugeordnet.', diffInSheet: 'Änderungen an den Anfang der Patchliste setzen',
+    refOld: 'Älter:', diffNoRef: 'Älteren Patch im linken Bereich laden, um die Änderungen zu sehen.', diffTitle: 'Patch-Änderungen', diffNone: 'Keine Änderung zwischen den beiden Patches.',
+    kMod: 'geändert', kAdd: 'hinzugefügt', kDel: 'entfernt', kSame: 'unverändert', gMod: 'Geändert', gAdd: 'Hinzugefügt', gDel: 'Entfernt',
+    thChange: 'Änderung', thFrom: 'Vorher', thTo: 'Nachher', thPatch: 'Patch', dAddr: 'Adresse', dType: 'Typ', dLayer: 'Layer', dName: 'Name', dNch: 'Kanäle',
+    diffInfo: (o, n, p) => `${o} → ${n} — ${p} Seite${p > 1 ? 'n' : ''}`, diffFoot: 'Patch-Änderungen', refErr: 'Älterer Patch nicht lesbar:', refNoCols: 'Spalten in der älteren Datei nicht erkannt. Sie zuerst als Haupt-Patch öffnen, um die Spalten zu wählen.',
+    mapBtn: 'Spalten der Datei…', mapTitle: 'Spalten der Datei', mapHint: 'Angeben, welche Spalte was enthält. Mindestens der Patch oder Universe und Adresse sind nötig. Die Wahl wird für Dateien mit gleicher Kopfzeile gespeichert.',
+    mapAuto: 'Geräte ohne Nummer nummerieren (in Adressreihenfolge)', mapReset: 'Automatische Erkennung', mapCancel: 'Abbrechen', mapApply: 'Übernehmen', mapNeed: 'Mindestens die Spalte Patch oder Universe + Adresse wählen.', mapNone: '— keine —',
+    mFid: 'Fix ID', mChid: 'Ch ID', mLayer: 'Layer / Gruppe', mName: 'Name', mType: 'Gerätetyp', mPatch: 'Patch (Univ.Adresse)', mUniv: 'Universe (eigene Spalte)', mAddr: 'Adresse (eigene Spalte)', mNch: 'Kanalanzahl',
+    unknownCols: 'Spalten nicht erkannt: im soeben geöffneten Fenster wählen.', noIds: 'Keine Gerätenummer in der Datei.', autoNum: 'Automatisch nummerieren',
+    legPlugins: 'Plugins für das Pult', pluginsHint: 'Im Stammverzeichnis des USB-Sticks entpacken, dann im Plugin-Pool des Pults: Import → GiveMeThePatch.', repoLink: 'Das Projekt auf GitHub',
+    save: 'Liste speichern (.html)', saveHint: 'Eine einzige Datei mit Patch, Notizen, ausgeblendeten Geräten und Einstellungen. Öffnet sich in jedem Browser.', fromSaved: 'Gespeicherte Liste', hidePh: 'Fix ID oder Name…', hideBtn: 'Ausblenden', hideHint: 'Oder in der Vorschau auf eine Zeile klicken, um sie auszublenden.', unhideAll: 'Alle wieder einblenden', unhide: 'Einblenden', hideRow: 'Klicken, um dieses Gerät auszublenden', notFound: 'Kein passendes Gerät.', stHidden: n => `${n} manuell ausgeblendet`,
+    legFile: 'Datei', print: 'Drucken / PDF',
+    printHint: 'Im Druckdialog: Ziel „Als PDF speichern“ oder den Drucker, Ränder <b>Keine</b>, „Hintergrundgrafiken“ aktiviert.',
+    foot: 'Die Datei wird im Browser gelesen: Es wird nichts an den Server gesendet. Give Me The Patch, von Mart1ver.',
+    zoom: 'Zoom', noFile: 'Keine Datei geladen', emptyMsg: 'Patch laden, um zu beginnen: Export aus grandMA2 oder grandMA3, WYSIWYG, Capture oder eine .html-Liste des Plugins.',
+    loaded: 'Datei geladen', fromConsole: 'Patch vom Pult gelesen', changeFile: 'Klicken oder andere Datei ablegen, um sie zu wechseln',
+    readErr: 'Datei nicht lesbar', emptyFile: 'Leere Datei.', noFixtures: 'Keine Geräte in der Datei gefunden.',
+    noCols: h => `Spalten nicht gefunden. Mindestens eine Spalte „Patch“ (oder „DMX Universe“ + „DMX Channel“) ist nötig. Gelesene Kopfzeile: ${h}`,
+    noPatched: 'Keine gepatchten Geräte anzuzeigen.',
+    fixtures: n => `${n} Gerät${n > 1 ? 'e' : ''}`, cont: '(Forts.)',
+    thFid: 'Fix ID', thName: 'Name', thType: 'Typ', thUniv: 'Univ.', thAddr: 'Adr.', thLayer: 'Layer',
+    univ: 'Universe', unpatched: 'Ungepatcht', secLayer: 'Patch nach Layer', secUniv: 'Patch nach Universe',
+    warnDup: 'Doppelte Startadressen:', warnOvl: 'Überlappende DMX-Bereiche:', warnUnp: n => `${n} ungepatchte(s) Gerät(e):`,
+    printed: d => `Gedruckt am ${d}`, exported: (d, h) => `Exportiert am ${d} um ${h}`, optExport: 'Exportdatum anzeigen',
+    kpiFix: 'Geräte', kpiLayers: 'Layer', kpiUniv: 'DMX-Universes', kpiTypes: 'Gerätetypen',
+    sumLayer: 'Übersicht nach Layer', sumUniv: 'Übersicht nach Universe',
+    thQty: 'Anz.', thTypes: 'Typen', thUnivFull: 'Universe', thStart: 'Startadressen', thLayers: 'Layer',
+    pageInfo: (f, n, fmt) => `${f} — ${n} Seite${n > 1 ? 'n' : ''} ${fmt} quer`,
+    stFix: 'Geräte', stLayers: 'Layer', stUniv: 'Universes', stTypes: 'Typen',
+    alDup: n => `${n} doppelte Adresse(n)`, alOvl: n => `${n} überlappende(r) Bereich(e)`, alUnp: n => `${n} ungepatcht`, alHidden: ' — auf der Liste ausgeblendet',
+    alOk: '✓ Keine doppelte Startadresse, alles ist gepatcht.',
+    defTitle: 'Lichtpatch', docTitle: 'Give Me The Patch', locale: 'de-DE',
+  },
+  ja: {
+    brandTitle: 'Give Me The Patch', brandSub: 'パッチ → 印刷用シートとラベル',
+    dropTitle: 'ここにパッチをドロップ', dropSub: 'CSV または .html — クリックしてファイルを選択',
+    legHeader: 'ヘッダー', lblTitle: 'タイトル', lblPlace: '会場 / サブタイトル', lblNotes: '表題欄（自由記入）',
+    line1: '1行目', line2: '2行目', line3: '3行目', line4: '4行目',
+    legFormat: '用紙サイズ（横向き）', fmtA3: 'A3 · 3列', fmtA4: 'A4 · 2列',
+    legContent: '内容', optSumLayer: 'レイヤー別集計', optSumUniv: 'ユニバース別集計', optSumType: '機種別集計', sumType: '機種別集計', thFxType: '機種', optLayer: 'レイヤー別パッチ', optUniv: 'ユニバース別パッチ', optHide: '未パッチの機材を隠す', legHidden: '非表示の機材', tabPatch: 'パッチシート', tabLabels: 'ラベル', legLabels: 'ラベル', lbFid: 'Fix ID', lbPatch: 'DMXアドレス（univ.addr）', lbName: '名前', lbType: '機種', lbChid: 'Ch ID', lbLayer: 'レイヤー名（帯）', lbAnn: 'メモ欄', lbHint: 'メモ：プレビューでラベルの下部をクリックして入力。', legColors: '印刷するレイヤー', lcHint: 'チェックを外すとそのレイヤーのラベルは印刷されません。色見本をクリックすると色を変更できます。', lcPrint: 'このレイヤーのラベルを印刷', colorsReset: '既定の色', annPh: 'メモ…', lbInfo: (f, n, p) => `${f} — ラベル ${n} 枚、A3 ${p} 枚`, lbFoot: (p, n) => `ラベル · ${p}/${n} 枚目`, noLabels: 'ラベルを作る機材がありません。',
+    lbCutGrp: 'A3 切り取り用（テープ貼り）', lbAdhGrp: 'A4 ラベルシール用紙', lbCustom: 'その他の用紙（寸法を入力）…', lbOnly: 'Fix ID のみ（遠くから読める）',
+    cuPage: '用紙', cuCols: '列 × 行', cuW: 'ラベル幅 (mm)', cuH: 'ラベル高さ (mm)', cuLeft: '左余白 (mm)', cuTop: '上余白 (mm)', cuPx: '横ピッチ (mm)', cuPy: '縦ピッチ (mm)',
+    lbAdhHint: 'ラベル用紙：100 %（実際のサイズ）、余白なしで印刷。まず普通紙で試し、用紙に重ねて透かして確認してください。',
+    lbInfoAdh: (f, n, p, nm) => `${f} — ラベル ${n} 枚、${nm} ${p} 枚`,
+    tabDiff: '変更点', legDiff: '以前のパッチと比較', refBtn: '以前のパッチを読み込む…', refHint: 'CSV、または .html シート（プラグイン出力または保存版）。機材は Fix ID で照合します。', diffInSheet: '変更点をパッチシートの先頭に追加',
+    refOld: '以前：', diffNoRef: '左のパネルで以前のパッチを読み込むと、変更点が表示されます。', diffTitle: 'パッチの変更点', diffNone: '2つのパッチに違いはありません。',
+    kMod: '変更', kAdd: '追加', kDel: '削除', kSame: '変更なし', gMod: '変更', gAdd: '追加', gDel: '削除',
+    thChange: '変更', thFrom: '変更前', thTo: '変更後', thPatch: 'パッチ', dAddr: 'アドレス', dType: '機種', dLayer: 'レイヤー', dName: '名前', dNch: 'チャンネル数',
+    diffInfo: (o, n, p) => `${o} → ${n} — ${p} ページ`, diffFoot: 'パッチの変更点', refErr: '以前のパッチを読み込めません：', refNoCols: '以前のファイルの列を認識できません。先にメインのパッチとして開き、列を選択してください。',
+    mapBtn: 'ファイルの列…', mapTitle: 'ファイルの列', mapHint: 'どの列に何が入っているか指定してください。少なくともパッチ、またはユニバースとアドレスが必要です。同じヘッダーのファイルでは選択が記憶されます。',
+    mapAuto: '番号のない機材に番号を振る（アドレス順）', mapReset: '自動検出', mapCancel: 'キャンセル', mapApply: '適用', mapNeed: '少なくとも Patch 列、またはユニバース + アドレスを選んでください。', mapNone: '— なし —',
+    mFid: 'Fix ID', mChid: 'Ch ID', mLayer: 'レイヤー / グループ', mName: '名前', mType: '機種', mPatch: 'パッチ（univ.アドレス）', mUniv: 'ユニバース（別の列）', mAddr: 'アドレス（別の列）', mNch: 'チャンネル数',
+    unknownCols: '列を認識できません：開いたウィンドウで選択してください。', noIds: 'ファイルに機材番号がありません。', autoNum: '自動で番号を振る',
+    legPlugins: '卓用プラグイン', pluginsHint: 'USBメモリのルートに解凍し、卓の Plugins プールで Import → GiveMeThePatch。', repoLink: 'GitHub のプロジェクト',
+    save: 'シートを保存 (.html)', saveHint: 'パッチ、メモ、非表示の機材、設定をまとめた1つのファイル。どのブラウザでも開けます。', fromSaved: '保存されたシート', hidePh: 'Fix ID または名前…', hideBtn: '隠す', hideHint: 'またはプレビューの行をクリックして隠す。', unhideAll: 'すべて再表示', unhide: '再表示', hideRow: 'クリックでこの機材を隠す', notFound: '一致する機材がありません。', stHidden: n => `手動で ${n} 台を非表示`,
+    legFile: 'ファイル', print: '印刷 / PDF',
+    printHint: '印刷ダイアログで：送信先「PDFに保存」またはプリンター、余白<b>なし</b>、「背景のグラフィック」にチェック。',
+    foot: 'ファイルはブラウザ内で読み込まれ、サーバーには何も送信されません。Give Me The Patch — Mart1ver 作。',
+    zoom: 'ズーム', noFile: 'ファイル未読み込み', emptyMsg: 'パッチを読み込んで始めます：grandMA2 / grandMA3 のエクスポート、WYSIWYG、Capture、またはプラグインの .html シート。',
+    loaded: '読み込み済み', fromConsole: '卓から読み取ったパッチ', changeFile: 'クリックまたは別のファイルをドロップして変更',
+    readErr: 'ファイルを読み込めません', emptyFile: 'ファイルが空です。', noFixtures: 'ファイルに機材がありません。',
+    noCols: h => `列が見つかりません。少なくとも「Patch」列（または「DMX Universe」+「DMX Channel」）が必要です。読み取ったヘッダー：${h}`,
+    noPatched: '表示するパッチ済みの機材がありません。',
+    fixtures: n => `${n} 台`, cont: '（続き）',
+    thFid: 'Fix ID', thName: '名前', thType: '機種', thUniv: 'Univ.', thAddr: 'Addr.', thLayer: 'レイヤー',
+    univ: 'ユニバース', unpatched: '未パッチ', secLayer: 'レイヤー別パッチ', secUniv: 'ユニバース別パッチ',
+    warnDup: '開始アドレスの重複：', warnOvl: '重なっているDMX範囲：', warnUnp: n => `未パッチの機材 ${n} 台：`,
+    printed: d => `印刷日 ${d}`, exported: (d, h) => `エクスポート ${d} ${h}`, optExport: 'エクスポート日時を表示',
+    kpiFix: '機材', kpiLayers: 'レイヤー', kpiUniv: 'DMXユニバース', kpiTypes: '機種',
+    sumLayer: 'レイヤー別集計', sumUniv: 'ユニバース別集計',
+    thQty: '数', thTypes: '機種', thUnivFull: 'ユニバース', thStart: '開始アドレス', thLayers: 'レイヤー',
+    pageInfo: (f, n, fmt) => `${f} — ${fmt} 横 ${n} ページ`,
+    stFix: '機材', stLayers: 'レイヤー', stUniv: 'ユニバース', stTypes: '機種',
+    alDup: n => `重複アドレス ${n} 件`, alOvl: n => `範囲の重なり ${n} 件`, alUnp: n => `未パッチ ${n} 台`, alHidden: ' — シートでは非表示',
+    alOk: '✓ 開始アドレスの重複なし、すべてパッチ済み。',
+    defTitle: '照明パッチ', docTitle: 'Give Me The Patch', locale: 'ja-JP',
+  },
+  ru: {
+    brandTitle: 'Give Me The Patch', brandSub: 'Патч → таблица и этикетки для печати',
+    dropTitle: 'Перетащите патч сюда', dropSub: 'CSV или .html — или нажмите, чтобы выбрать файл',
+    legHeader: 'Заголовок', lblTitle: 'Название', lblPlace: 'Площадка / подзаголовок', lblNotes: 'Штамп (свободный текст)',
+    line1: 'Строка 1', line2: 'Строка 2', line3: 'Строка 3', line4: 'Строка 4',
+    legFormat: 'Формат бумаги (альбомный)', fmtA3: 'A3 · 3 колонки', fmtA4: 'A4 · 2 колонки',
+    legContent: 'Содержание', optSumLayer: 'Сводка по слоям', optSumUniv: 'Сводка по юниверсам', optSumType: 'Сводка по типам приборов', sumType: 'Сводка по типам', thFxType: 'Тип прибора', optLayer: 'Патч по слоям', optUniv: 'Патч по юниверсам', optHide: 'Скрыть незапатченные приборы', legHidden: 'Скрытые приборы', tabPatch: 'Патч-лист', tabLabels: 'Этикетки', legLabels: 'Этикетки', lbFid: 'Fix ID', lbPatch: 'DMX-адрес (univ.addr)', lbName: 'Имя', lbType: 'Тип прибора', lbChid: 'Ch ID', lbLayer: 'Имя слоя (полоса)', lbAnn: 'Поле для заметки', lbHint: 'Заметка: нажмите внизу этикетки в предпросмотре и пишите.', legColors: 'Слои для печати', lcHint: 'Снимите отметку со слоя, чтобы не печатать его этикетки. Нажмите на образец цвета, чтобы изменить цвет.', lcPrint: 'Печатать этикетки этого слоя', colorsReset: 'Цвета по умолчанию', annPh: 'заметка…', lbInfo: (f, n, p) => `${f} — этикеток: ${n}, листов A3: ${p}`, lbFoot: (p, n) => `Этикетки · лист ${p}/${n}`, noLabels: 'Нет приборов для этикеток.',
+    lbCutGrp: 'A3 для вырезания (скотч)', lbAdhGrp: 'Листы самоклеящихся этикеток A4', lbCustom: 'Другой лист (ввести размеры)…', lbOnly: 'Только Fix ID (читается издалека)',
+    cuPage: 'Бумага', cuCols: 'Колонки × ряды', cuW: 'Ширина этикетки (мм)', cuH: 'Высота этикетки (мм)', cuLeft: 'Отступ слева (мм)', cuTop: 'Отступ сверху (мм)', cuPx: 'Шаг по горизонтали (мм)', cuPy: 'Шаг по вертикали (мм)',
+    lbAdhHint: 'Самоклеящийся лист: печатать в масштабе 100 % («Фактический размер»), поля «Нет». Сначала сделайте пробу на обычной бумаге и сравните на просвет.',
+    lbInfoAdh: (f, n, p, nm) => `${f} — этикеток: ${n}, листов ${nm}: ${p}`,
+    tabDiff: 'Изменения', legDiff: 'Сравнить с прежним патчем', refBtn: 'Загрузить прежний патч…', refHint: 'CSV или лист .html (плагин или сохранённый). Приборы сопоставляются по Fix ID.', diffInSheet: 'Добавить изменения в начало патч-листа',
+    refOld: 'Прежний:', diffNoRef: 'Загрузите прежний патч на левой панели, чтобы увидеть изменения.', diffTitle: 'Изменения патча', diffNone: 'Между двумя патчами нет изменений.',
+    kMod: 'изменено', kAdd: 'добавлено', kDel: 'удалено', kSame: 'без изменений', gMod: 'Изменено', gAdd: 'Добавлено', gDel: 'Удалено',
+    thChange: 'Изменение', thFrom: 'Было', thTo: 'Стало', thPatch: 'Патч', dAddr: 'Адрес', dType: 'Тип', dLayer: 'Слой', dName: 'Имя', dNch: 'Каналы',
+    diffInfo: (o, n, p) => `${o} → ${n} — страниц: ${p}`, diffFoot: 'Изменения патча', refErr: 'Не удаётся прочитать прежний патч:', refNoCols: 'Колонки в прежнем файле не распознаны. Сначала откройте его как основной патч и выберите колонки.',
+    mapBtn: 'Колонки файла…', mapTitle: 'Колонки файла', mapHint: 'Укажите, что содержит каждая колонка. Нужен как минимум патч или юниверс и адрес. Выбор запоминается для файлов с тем же заголовком.',
+    mapAuto: 'Пронумеровать приборы без номера (по порядку адресов)', mapReset: 'Автоопределение', mapCancel: 'Отмена', mapApply: 'Применить', mapNeed: 'Выберите хотя бы колонку Patch или Юниверс + Адрес.', mapNone: '— нет —',
+    mFid: 'Fix ID', mChid: 'Ch ID', mLayer: 'Слой / группа', mName: 'Имя', mType: 'Тип прибора', mPatch: 'Патч (univ.адрес)', mUniv: 'Юниверс (отдельная колонка)', mAddr: 'Адрес (отдельная колонка)', mNch: 'Число каналов',
+    unknownCols: 'Колонки не распознаны: выберите их в открывшемся окне.', noIds: 'В файле нет номеров приборов.', autoNum: 'Пронумеровать автоматически',
+    legPlugins: 'Плагины для пульта', pluginsHint: 'Распакуйте в корень USB-накопителя, затем в пуле Plugins пульта: Import → GiveMeThePatch.', repoLink: 'Проект на GitHub',
+    save: 'Сохранить лист (.html)', saveHint: 'Один файл с патчем, заметками, скрытыми приборами и настройками. Открывается в любом браузере.', fromSaved: 'Сохранённый лист', hidePh: 'Fix ID или имя…', hideBtn: 'Скрыть', hideHint: 'Или нажмите на строку в предпросмотре, чтобы скрыть её.', unhideAll: 'Показать все', unhide: 'Показать', hideRow: 'Нажмите, чтобы скрыть этот прибор', notFound: 'Подходящий прибор не найден.', stHidden: n => `Скрыто вручную: ${n}`,
+    legFile: 'Файл', print: 'Печать / PDF',
+    printHint: 'В окне печати: назначение «Сохранить как PDF» или принтер, поля <b>Нет</b>, отметить «Фоновая графика».',
+    foot: 'Файл читается в браузере: на сервер ничего не отправляется. Give Me The Patch, автор Mart1ver.',
+    zoom: 'Масштаб', noFile: 'Файл не загружен', emptyMsg: 'Загрузите патч, чтобы начать: экспорт grandMA2 или grandMA3, WYSIWYG, Capture или лист .html плагина.',
+    loaded: 'Файл загружен', fromConsole: 'Патч прочитан с пульта', changeFile: 'Нажмите или перетащите другой файл, чтобы заменить',
+    readErr: 'Не удаётся прочитать файл', emptyFile: 'Пустой файл.', noFixtures: 'В файле нет приборов.',
+    noCols: h => `Колонки не найдены. Нужна как минимум колонка «Patch» (или «DMX Universe» + «DMX Channel»). Прочитанный заголовок: ${h}`,
+    noPatched: 'Нет запатченных приборов для показа.',
+    fixtures: n => { const a = n % 10, b = n % 100; return `${n} ${a === 1 && b !== 11 ? 'прибор' : a >= 2 && a <= 4 && (b < 12 || b > 14) ? 'прибора' : 'приборов'}`; }, cont: '(продолж.)',
+    thFid: 'Fix ID', thName: 'Имя', thType: 'Тип', thUniv: 'Univ.', thAddr: 'Адр.', thLayer: 'Слой',
+    univ: 'Юниверс', unpatched: 'Без патча', secLayer: 'Патч по слоям', secUniv: 'Патч по юниверсам',
+    warnDup: 'Повторяющиеся стартовые адреса:', warnOvl: 'Перекрывающиеся DMX-диапазоны:', warnUnp: n => `Приборов без патча: ${n}:`,
+    printed: d => `Напечатано ${d}`, exported: (d, h) => `Экспорт ${d} в ${h}`, optExport: 'Показывать дату экспорта',
+    kpiFix: 'Приборы', kpiLayers: 'Слои', kpiUniv: 'DMX-юниверсы', kpiTypes: 'Типы приборов',
+    sumLayer: 'Сводка по слоям', sumUniv: 'Сводка по юниверсам',
+    thQty: 'Кол.', thTypes: 'Типы', thUnivFull: 'Юниверс', thStart: 'Стартовые адреса', thLayers: 'Слои',
+    pageInfo: (f, n, fmt) => `${f} — страниц ${fmt} (альбомная): ${n}`,
+    stFix: 'Приборы', stLayers: 'Слои', stUniv: 'Юниверсы', stTypes: 'Типы',
+    alDup: n => `Повторяющихся адресов: ${n}`, alOvl: n => `Перекрытий диапазонов: ${n}`, alUnp: n => `Без патча: ${n}`, alHidden: ' — скрыты в листе',
+    alOk: '✓ Нет повторяющихся стартовых адресов, всё запатчено.',
+    defTitle: 'Световой патч', docTitle: 'Give Me The Patch', locale: 'ru-RU',
+  },
+  ar: {
+    brandTitle: 'Give Me The Patch', brandSub: 'الباتش ← جدول وملصقات للطباعة',
+    dropTitle: 'أفلت ملف الباتش هنا', dropSub: 'CSV أو ‎.html — أو انقر لاختيار ملف',
+    legHeader: 'الترويسة', lblTitle: 'العنوان', lblPlace: 'المكان / عنوان فرعي', lblNotes: 'خانة البيانات (نص حر)',
+    line1: 'السطر 1', line2: 'السطر 2', line3: 'السطر 3', line4: 'السطر 4',
+    legFormat: 'حجم الورق (أفقي)', fmtA3: 'A3 · ‏3 أعمدة', fmtA4: 'A4 · ‏عمودان',
+    legContent: 'المحتوى', optSumLayer: 'ملخص حسب الطبقة', optSumUniv: 'ملخص حسب اليونيفرس', optSumType: 'ملخص حسب نوع الجهاز', sumType: 'ملخص حسب النوع', thFxType: 'نوع الجهاز', optLayer: 'الباتش حسب الطبقة', optUniv: 'الباتش حسب اليونيفرس', optHide: 'إخفاء الأجهزة غير الموصولة', legHidden: 'الأجهزة المخفية', tabPatch: 'جدول الباتش', tabLabels: 'الملصقات', legLabels: 'الملصقات', lbFid: 'Fix ID', lbPatch: 'عنوان DMX ‏(univ.addr)', lbName: 'الاسم', lbType: 'نوع الجهاز', lbChid: 'Ch ID', lbLayer: 'اسم الطبقة (الشريط)', lbAnn: 'مساحة للملاحظة', lbHint: 'ملاحظة: انقر أسفل الملصق في المعاينة واكتب.', legColors: 'الطبقات المراد طباعتها', lcHint: 'ألغِ تحديد طبقة لعدم طباعة ملصقاتها. انقر على عيّنة اللون لتغييره.', lcPrint: 'طباعة ملصقات هذه الطبقة', colorsReset: 'الألوان الافتراضية', annPh: 'ملاحظة…', lbInfo: (f, n, p) => `${f} — الملصقات: ${n}، أوراق A3: ${p}`, lbFoot: (p, n) => `الملصقات · الورقة ${p}/${n}`, noLabels: 'لا توجد أجهزة لوضع ملصقات عليها.',
+    lbCutGrp: 'A3 للقص (بشريط لاصق)', lbAdhGrp: 'أوراق ملصقات لاصقة A4', lbCustom: 'ورقة أخرى (أدخل أبعادها)…', lbOnly: 'Fix ID فقط (يُقرأ من بعيد)',
+    cuPage: 'الورق', cuCols: 'أعمدة × صفوف', cuW: 'عرض الملصق (مم)', cuH: 'ارتفاع الملصق (مم)', cuLeft: 'الهامش الأيسر (مم)', cuTop: 'الهامش العلوي (مم)', cuPx: 'الخطوة الأفقية (مم)', cuPy: 'الخطوة العمودية (مم)',
+    lbAdhHint: 'ورقة لاصقة: اطبع بنسبة 100 % («الحجم الفعلي») وبدون هوامش. جرّب أولاً على ورق عادي وقارنه بالورقة في الضوء.',
+    lbInfoAdh: (f, n, p, nm) => `${f} — الملصقات: ${n}، أوراق ${nm}: ${p}`,
+    tabDiff: 'التغييرات', legDiff: 'المقارنة مع باتش سابق', refBtn: 'تحميل الباتش السابق…', refHint: 'ملف CSV أو جدول ‎.html (من الإضافة أو محفوظ). تتم مطابقة الأجهزة حسب Fix ID.', diffInSheet: 'إضافة التغييرات في بداية جدول الباتش',
+    refOld: 'السابق:', diffNoRef: 'حمّل الباتش السابق من اللوحة الجانبية لرؤية ما تغيّر.', diffTitle: 'تغييرات الباتش', diffNone: 'لا توجد تغييرات بين الباتشين.',
+    kMod: 'معدّلة', kAdd: 'مضافة', kDel: 'محذوفة', kSame: 'دون تغيير', gMod: 'معدّلة', gAdd: 'مضافة', gDel: 'محذوفة',
+    thChange: 'التغيير', thFrom: 'قبل', thTo: 'بعد', thPatch: 'الباتش', dAddr: 'العنوان', dType: 'النوع', dLayer: 'الطبقة', dName: 'الاسم', dNch: 'القنوات',
+    diffInfo: (o, n, p) => `${o} ← ${n} — الصفحات: ${p}`, diffFoot: 'تغييرات الباتش', refErr: 'تعذّرت قراءة الباتش السابق:', refNoCols: 'لم يتم التعرف على أعمدة الملف السابق. افتحه أولاً كباتش رئيسي لاختيار أعمدته.',
+    mapBtn: 'أعمدة الملف…', mapTitle: 'أعمدة الملف', mapHint: 'حدّد محتوى كل عمود. يلزم على الأقل الباتش، أو اليونيفرس والعنوان. يُحفظ الاختيار للملفات ذات الترويسة نفسها.',
+    mapAuto: 'ترقيم الأجهزة التي ليس لها رقم (بترتيب العناوين)', mapReset: 'الكشف التلقائي', mapCancel: 'إلغاء', mapApply: 'تطبيق', mapNeed: 'اختر على الأقل عمود Patch، أو اليونيفرس + العنوان.', mapNone: '— لا شيء —',
+    mFid: 'Fix ID', mChid: 'Ch ID', mLayer: 'الطبقة / المجموعة', mName: 'الاسم', mType: 'نوع الجهاز', mPatch: 'الباتش (univ.العنوان)', mUniv: 'اليونيفرس (عمود منفصل)', mAddr: 'العنوان (عمود منفصل)', mNch: 'عدد القنوات',
+    unknownCols: 'لم يتم التعرف على الأعمدة: اخترها في النافذة التي فُتحت للتو.', noIds: 'لا توجد أرقام أجهزة في الملف.', autoNum: 'ترقيم تلقائي',
+    legPlugins: 'إضافات لوحة التحكم', pluginsHint: 'فك الضغط في جذر ذاكرة USB، ثم في مجمع Plugins في لوحة التحكم: Import ← GiveMeThePatch.', repoLink: 'المشروع على GitHub',
+    save: 'حفظ الجدول (‎.html)', saveHint: 'ملف واحد يضم الباتش والملاحظات والأجهزة المخفية والإعدادات. يُفتح في أي متصفح.', fromSaved: 'جدول محفوظ', hidePh: 'Fix ID أو الاسم…', hideBtn: 'إخفاء', hideHint: 'أو انقر على سطر في المعاينة لإخفائه.', unhideAll: 'إظهار الكل', unhide: 'إظهار', hideRow: 'انقر لإخفاء هذا الجهاز', notFound: 'لا يوجد جهاز مطابق.', stHidden: n => `مخفية يدوياً: ${n}`,
+    legFile: 'الملف', print: 'طباعة / PDF',
+    printHint: 'في نافذة الطباعة: الوجهة «حفظ بتنسيق PDF» أو الطابعة، الهوامش <b>بلا</b>، مع تحديد «رسومات الخلفية».',
+    foot: 'يُقرأ الملف داخل المتصفح: لا يُرسل أي شيء إلى الخادم. Give Me The Patch، من تطوير Mart1ver.',
+    zoom: 'تكبير', noFile: 'لم يتم تحميل ملف', emptyMsg: 'حمّل باتش للبدء: تصدير grandMA2 أو grandMA3، أو WYSIWYG، أو Capture، أو جدول ‎.html من الإضافة.',
+    loaded: 'تم تحميل الملف', fromConsole: 'باتش مقروء من لوحة التحكم', changeFile: 'انقر أو أفلت ملفاً آخر لتغييره',
+    readErr: 'تعذّرت قراءة الملف', emptyFile: 'الملف فارغ.', noFixtures: 'لا توجد أجهزة في الملف.',
+    noCols: h => `لم يتم العثور على الأعمدة. يلزم على الأقل عمود «Patch» (أو «DMX Universe» + «DMX Channel»). الترويسة المقروءة: ${h}`,
+    noPatched: 'لا توجد أجهزة موصولة لعرضها.',
+    fixtures: n => `الأجهزة: ${n}`, cont: '(تابع)',
+    thFid: 'Fix ID', thName: 'الاسم', thType: 'النوع', thUniv: 'Univ.', thAddr: 'Addr.', thLayer: 'الطبقة',
+    univ: 'يونيفرس', unpatched: 'غير موصولة', secLayer: 'الباتش حسب الطبقة', secUniv: 'الباتش حسب اليونيفرس',
+    warnDup: 'عناوين بداية مكررة:', warnOvl: 'نطاقات DMX متداخلة:', warnUnp: n => `أجهزة غير موصولة (${n}):`,
+    printed: d => `طُبع في ${d}`, exported: (d, h) => `صُدّر في ${d} الساعة ${h}`, optExport: 'إظهار تاريخ التصدير',
+    kpiFix: 'الأجهزة', kpiLayers: 'الطبقات', kpiUniv: 'يونيفرسات DMX', kpiTypes: 'أنواع الأجهزة',
+    sumLayer: 'ملخص حسب الطبقة', sumUniv: 'ملخص حسب اليونيفرس',
+    thQty: 'العدد', thTypes: 'الأنواع', thUnivFull: 'يونيفرس', thStart: 'عناوين البداية', thLayers: 'الطبقات',
+    pageInfo: (f, n, fmt) => `${f} — الصفحات: ${n} (${fmt} أفقي)`,
+    stFix: 'الأجهزة', stLayers: 'الطبقات', stUniv: 'اليونيفرسات', stTypes: 'الأنواع',
+    alDup: n => `عناوين مكررة: ${n}`, alOvl: n => `نطاقات متداخلة: ${n}`, alUnp: n => `غير موصولة: ${n}`, alHidden: ' — مخفية في الجدول',
+    alOk: '✓ لا توجد عناوين بداية مكررة، وكل الأجهزة موصولة.',
+    defTitle: 'باتش الإضاءة', docTitle: 'Give Me The Patch', locale: 'ar-u-nu-latn',
+  },
 };
-let LANG = store.get('lang', (navigator.language || 'fr').toLowerCase().startsWith('fr') ? 'fr' : 'en');
-if (!I18N[LANG]) LANG = 'fr';
+let LANG = store.get('lang', (navigator.language || 'fr').slice(0, 2).toLowerCase());
+if (!I18N[LANG]) LANG = 'en';
 const t = (k, ...a) => { const v = I18N[LANG][k] ?? I18N.fr[k]; return typeof v === 'function' ? v(...a) : v; };
 function applyI18n() {
   document.documentElement.lang = LANG;
   document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t(el.dataset.i18n); });
   document.querySelectorAll('[data-i18n-html]').forEach(el => { el.innerHTML = t(el.dataset.i18nHtml); });
   document.querySelectorAll('[data-i18n-ph]').forEach(el => { el.placeholder = t(el.dataset.i18nPh); el.setAttribute('aria-label', t(el.dataset.i18nPh)); });
+  document.querySelectorAll('[data-i18n-title]').forEach(el => { el.title = t(el.dataset.i18nTitle); });
   document.querySelectorAll('[data-i18n-label]').forEach(el => { el.label = t(el.dataset.i18nLabel); });
-  document.querySelectorAll('#lang button').forEach(b => b.classList.toggle('on', b.dataset.v === LANG));
+  document.documentElement.dir = LANG === 'ar' ? 'rtl' : 'ltr';
+  $('#lang').value = LANG;
 }
 
 const state = { fx: null, fileName: '', fmt: store.get('fmt', 'A3'), label: null, exported: null, hidden: new Set() };
@@ -1113,7 +1359,7 @@ function saveSheet() {
   const doc = PRISTINE.cloneNode(true);
   doc.querySelector('#gmtp-data').textContent =
     'window.EMBEDDED_CSV=' + J(state.src.text) + ';window.EMBEDDED_META=' + J(meta) + ';window.EMBEDDED_STATE=' + J(st) + ';';
-  const stem = state.fileName.replace(/\.(csv|txt|html?)$/i, '').replace(/\s*\(grandMA2\)$/, '').replace(/_GiveMeThePatch/g, '');
+  const stem = state.fileName.replace(/\.(csv|txt|html?)$/i, '').replace(/\s*\(grandMA[23]\)$/, '').replace(/_GiveMeThePatch/g, '');
   const slug = stem.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^\w.-]+/g, '_').replace(/^_+|_+$/g, '') || 'patch';
   const a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob(['<!DOCTYPE html>\n' + doc.outerHTML], { type: 'text/html' }));
@@ -1377,13 +1623,13 @@ document.querySelectorAll('#tabs button').forEach(b => b.classList.toggle('on', 
 // langue
 function setLang(l) {
   const ti = $('#titre');
-  if (ti.value.trim() === I18N[LANG].defTitle) { ti.value = I18N[l].defTitle; store.set('titre', ti.value); }
+  if (Object.values(I18N).some(d => d.defTitle === ti.value.trim())) { ti.value = I18N[l].defTitle; store.set('titre', ti.value); }
   LANG = l; store.set('lang', l);
   applyI18n(); setDropText();
   refreshRefUI();
   if (state.fx) { refreshHideUI(); showInfo(); render(); } else { $('#pageInfo').textContent = t('noFile'); }
 }
-document.querySelectorAll('#lang button').forEach(b => b.addEventListener('click', () => setLang(b.dataset.v)));
+$('#lang').addEventListener('change', e => setLang(e.target.value));
 applyI18n();
 if (!state.fx) $('#pageInfo').textContent = t('noFile');
 
