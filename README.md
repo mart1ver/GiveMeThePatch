@@ -28,7 +28,7 @@ Ouvrir `index.html` dans un navigateur, ou la page publiée sur GitHub Pages, pu
 - **Changements** : on charge l'ancien patch, la page liste les projecteurs modifiés, ajoutés et supprimés. Ce récap peut être ajouté en tête de la feuille.
 - **Enregistrer la feuille** : un seul fichier `.html` avec le patch, les annotations, les masquages et les réglages, à envoyer tel quel.
 
-Interface et documents imprimés en français, anglais, espagnol, allemand, japonais, russe et arabe. La langue de l'interface et celle des documents se choisissent séparément.
+Interface et documents imprimés en français, anglais, espagnol, portugais, italien, allemand, néerlandais, chinois, japonais, russe et arabe. La langue de l'interface et celle des documents se choisissent séparément.
 
 Pour imprimer : marges *Aucune*, « Graphiques d'arrière-plan » coché. Pour les planches adhésives, imprimer à 100 % (*Taille réelle*).
 
@@ -57,4 +57,4 @@ GiveMeThePatch est un logiciel libre, sous licence **GNU GPL v3 ou ultérieure**
 
 ---
 
-**English.** Open `index.html` and drop a CSV export from grandMA2/3, WYSIWYG or Capture. You get a patch sheet, colour-coded fixture labels (A3 to cut out, or A4 adhesive sheets), a list of changes against an older patch, and a *Save* button that writes everything into a single shareable `.html` file. Available in French, English, Spanish, German, Japanese, Russian and Arabic. The `grandma2/` and `grandma3/` plugins read the patch on the console and write the sheet to a USB stick. License: GNU GPL v3 or later.
+**English.** Open `index.html` and drop a CSV export from grandMA2/3, WYSIWYG or Capture. You get a patch sheet, colour-coded fixture labels (A3 to cut out, or A4 adhesive sheets), a list of changes against an older patch, and a *Save* button that writes everything into a single shareable `.html` file. Available in French, English, Spanish, Portuguese, Italian, German, Dutch, Chinese, Japanese, Russian and Arabic. The `grandma2/` and `grandma3/` plugins read the patch on the console and write the sheet to a USB stick. License: GNU GPL v3 or later.
