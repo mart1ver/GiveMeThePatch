@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GMA3 DataVersion="1.9.3.3">
+	<Plugin Name="Give The Patch" Author="Mart1ver" Version="1.0.0.0">
+		<ComponentLua Name="GiveMeThePatch" FileName="GiveMeThePatch.lua" />
+	</Plugin>
+</GMA3>
