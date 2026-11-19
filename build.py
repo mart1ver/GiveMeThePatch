@@ -3,7 +3,7 @@
 
     python3 build.py
 """
-import os
+import os, zipfile
 
 root = os.path.dirname(os.path.abspath(__file__))
 html = open(os.path.join(root, 'index.html'), encoding='utf-8').read()
@@ -31,4 +31,12 @@ for d, xml in XML.items():
         f.write(src.replace('@@TEMPLATE@@', html))
     with open(os.path.join(root, d, 'GiveMeThePatch.xml'), 'w', encoding='utf-8') as f:
         f.write(xml)
+    # zip prêt à dézipper à la racine de la clé USB
+    usb = {'grandma2': 'gma2/plugins', 'grandma3': 'gma3_library/datapools/plugins'}[d]
+    name = 'GiveMeThePatch_' + d.replace('grandma', 'grandMA') + '.zip'
+    with zipfile.ZipFile(os.path.join(root, d, name), 'w', zipfile.ZIP_DEFLATED) as z:
+        for ext in ('lua', 'xml'):
+            info = zipfile.ZipInfo(usb + '/GiveMeThePatch.' + ext, (2026, 1, 1, 0, 0, 0))
+            info.compress_type = zipfile.ZIP_DEFLATED
+            z.writestr(info, open(os.path.join(root, d, 'GiveMeThePatch.' + ext), 'rb').read())
     print(d + '/GiveMeThePatch.lua :', os.path.getsize(os.path.join(root, d, 'GiveMeThePatch.lua')), 'octets')

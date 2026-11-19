@@ -27,6 +27,8 @@ Ouvrir `index.html` dans un navigateur, ou la page publiée sur GitHub Pages, pu
 - **Changements** : on charge l'ancien patch, la page liste les projecteurs modifiés, ajoutés et supprimés. Ce récap peut être ajouté en tête de la feuille.
 - **Enregistrer la feuille** : un seul fichier `.html` avec le patch, les annotations, les masquages et les réglages, à envoyer tel quel.
 
+Interface et feuilles en français, anglais, espagnol, allemand, japonais, russe et arabe.
+
 Pour imprimer : marges *Aucune*, « Graphiques d'arrière-plan » coché. Pour les planches adhésives, imprimer à 100 % (*Taille réelle*).
 
 **Fichiers acceptés :** CSV grandMA2 / grandMA3 (`Layer;Fix ID;Ch ID;Name;FixtureType;Patch`), rapport *Spots* de WYSIWYG, export de Capture, ou une feuille `.html` du plugin. Si les colonnes ne sont pas reconnues, la page demande lesquelles utiliser et retient ce choix.
@@ -34,6 +36,8 @@ Pour imprimer : marges *Aucune*, « Graphiques d'arrière-plan » coché. Pour l
 ## Plugins grandMA2 et grandMA3
 
 Le plugin lit le patch dans le show et écrit la feuille (`.html`, données intégrées) et le CSV sur la clé USB, dans un dossier `GiveMeThePatch`. Il trouve la clé tout seul. Dans le pool Plugins, il s'appelle **Give The Patch**.
+
+Le plus simple : dans la page web, boutons **grandMA2** / **grandMA3** du panneau de gauche. Le zip se dézippe à la racine de la clé USB et met les fichiers au bon endroit.
 
 | | Copier `GiveMeThePatch.lua` + `.xml` dans | Puis |
 |---|---|---|
@@ -52,4 +56,4 @@ GiveMeThePatch est un logiciel libre, sous licence **GNU GPL v3 ou ultérieure**
 
 ---
 
-**English.** Open `index.html` and drop a CSV export from grandMA2/3, WYSIWYG or Capture. You get a patch sheet, colour-coded fixture labels (A3 to cut out, or A4 adhesive sheets), a list of changes against an older patch, and a *Save* button that writes everything into a single shareable `.html` file. The `grandma2/` and `grandma3/` plugins read the patch on the console and write the sheet to a USB stick. License: GNU GPL v3 or later.
+**English.** Open `index.html` and drop a CSV export from grandMA2/3, WYSIWYG or Capture. You get a patch sheet, colour-coded fixture labels (A3 to cut out, or A4 adhesive sheets), a list of changes against an older patch, and a *Save* button that writes everything into a single shareable `.html` file. Available in French, English, Spanish, German, Japanese, Russian and Arabic. The `grandma2/` and `grandma3/` plugins read the patch on the console and write the sheet to a USB stick. License: GNU GPL v3 or later.
