@@ -19,6 +19,7 @@ Ouvrir `index.html` dans un navigateur, ou la page publiée sur GitHub Pages, pu
 - **Feuille de patch** (A3 ou A4 paysage) :
   - récapitulatifs par layer, par univers et par type ;
   - patch par layer et patch par univers ;
+  - plan d'occupation : une barre de 512 canaux par univers, avec les plages libres ;
   - alertes : adresses en double, plages qui se chevauchent, projecteurs non patchés.
 - **Étiquettes** à coller sur les projecteurs :
   - planches A3 à découper (4 × 3, 3 × 4 ou 5 × 2 cm), ou planches adhésives A4 du commerce (Avery, ou dimensions au choix) ;

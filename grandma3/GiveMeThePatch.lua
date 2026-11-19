@@ -127,6 +127,20 @@ body[data-tab="patch"] aside [data-tab]:not([data-tab~="patch"]),
 body[data-tab="labels"] aside [data-tab]:not([data-tab~="labels"]),
 body[data-tab="diff"] aside [data-tab]:not([data-tab~="diff"]) { display: none !important; }
 .tabs button { white-space: nowrap; }
+/* plan d'occupation des univers : une barre de 512 canaux par univers */
+.umap { height: 17mm; display: flex; flex-direction: column; }
+.umap .uh { display: flex; gap: 3mm; align-items: baseline; height: 5mm; font-size: 7.6pt; white-space: nowrap; }
+.umap .uh b { font-size: 9pt; }
+.umap .uh .free { color: #555; overflow: hidden; text-overflow: ellipsis; flex: 1; min-width: 0; }
+.umap .bar { position: relative; height: 8mm; background: #f1f1f1; border: .4pt solid #999; direction: ltr; }
+.umap .useg { position: absolute; top: 0; bottom: 0; background: var(--c); color: var(--ct); box-shadow: inset -.35pt 0 #fff;
+  font: 700 6.2pt/8mm "IBM Plex Sans Condensed", "IBM Plex Sans", Arial, sans-serif; overflow: hidden; white-space: nowrap; padding-left: .5mm; }
+.umap .useg.est { background-image: repeating-linear-gradient(135deg, rgba(255,255,255,.4) 0 .45mm, transparent .45mm 1.8mm); }
+.umap .ovl { position: absolute; bottom: -1.6mm; height: 1.2mm; background: #d11; }
+.umap .scale { position: relative; height: 3.2mm; font-size: 5.6pt; color: #777; direction: ltr; margin-top: .5mm; }
+.umap .scale span { position: absolute; top: .4mm; transform: translateX(-50%); }
+.umap .scale span::before { content: ''; position: absolute; left: 50%; top: -.9mm; height: .8mm; border-left: .3pt solid #999; }
+.maplegend { font-size: 7.4pt; color: #555; margin: -2mm 0 3mm; }
 /* arabe (droite à gauche) : adresses, numéros et plages restent écrits de gauche à droite */
 [dir=rtl] .sheet td.num, [dir=rtl] .sheet td.ad, [dir=rtl] .sheet td.fid, [dir=rtl] .sheet td.dfrom, [dir=rtl] .sheet td.dto,
 [dir=rtl] .lbl .big { direction: ltr; unicode-bidi: isolate; }
@@ -307,6 +321,7 @@ dialog#mapDlg h2 { margin: 0 0 6px; font-size: 17px; }
       <label class="chk"><input type="checkbox" id="optSumType" checked> <span data-i18n="optSumType">Récap. par type de projecteur</span></label>
       <label class="chk"><input type="checkbox" id="optLayer" checked> <span data-i18n="optLayer">Patch par layer</span></label>
       <label class="chk"><input type="checkbox" id="optUniv" checked> <span data-i18n="optUniv">Patch par univers</span></label>
+      <label class="chk"><input type="checkbox" id="optMap" checked> <span data-i18n="optMap">Plan d'occupation des univers</span></label>
       <label class="chk"><input type="checkbox" id="optHideUnp"> <span data-i18n="optHide">Masquer les non patchés</span></label>
       <label class="chk"><input type="checkbox" id="optExport" checked> <span data-i18n="optExport">Afficher la date d'export</span></label>
     </fieldset>
@@ -467,7 +482,7 @@ const I18N = {
     legHeader: 'En-tête', lblTitle: 'Titre', lblPlace: 'Lieu / sous-titre', lblNotes: 'Cartouche (texte libre)',
     line1: 'Ligne 1', line2: 'Ligne 2', line3: 'Ligne 3', line4: 'Ligne 4',
     legFormat: 'Format papier (paysage)', fmtA3: 'A3 · 3 colonnes', fmtA4: 'A4 · 2 colonnes',
-    legContent: 'Contenu', optSumLayer: 'Récap. par layer', optSumUniv: 'Récap. par univers', optSumType: 'Récap. par type de projecteur', sumType: 'Récapitulatif par type', thFxType: 'Type de projecteur', optLayer: 'Patch par layer', optUniv: 'Patch par univers', optHide: 'Masquer les non patchés', legHidden: 'Projecteurs masqués', tabPatch: 'Feuille de patch', tabLabels: 'Étiquettes', legLabels: 'Étiquettes', lbFid: 'Fix ID', lbPatch: 'Adresse DMX (univ.adr)', lbName: 'Nom', lbType: 'Type de projecteur', lbChid: 'Ch ID', lbLayer: 'Nom du layer (bandeau)', lbAnn: "Zone d'annotation", lbHint: "Annotation : cliquer en bas d'une étiquette dans l'aperçu et écrire.", legColors: 'Layers à imprimer', lcHint: 'Décocher un layer pour ne pas imprimer ses étiquettes. Cliquer sur la pastille pour changer sa couleur.', lcPrint: 'Imprimer les étiquettes de ce layer', colorsReset: 'Couleurs par défaut', annPh: 'annotation…', lbInfo: (f, n, p) => `${f} — ${n} étiquette${n > 1 ? 's' : ''}, ${p} planche${p > 1 ? 's' : ''} A3`, lbFoot: (p, n) => `Étiquettes · planche ${p}/${n}`, noLabels: 'Aucun projecteur à étiqueter.',
+    legContent: 'Contenu', optSumLayer: 'Récap. par layer', optSumUniv: 'Récap. par univers', optSumType: 'Récap. par type de projecteur', sumType: 'Récapitulatif par type', thFxType: 'Type de projecteur', optLayer: 'Patch par layer', optUniv: 'Patch par univers', optMap: "Plan d'occupation des univers", secMap: "Plan d'occupation des univers", mapUsed: n => `${n}/512 canaux utilisés`, mapFree: 'Libre :', mapFull: 'Plus aucun canal libre', mapEst: "Hachuré : nombre de canaux inconnu, plage estimée jusqu'au projecteur suivant.", mapOvl: 'Rouge : canaux en conflit.', optHide: 'Masquer les non patchés', legHidden: 'Projecteurs masqués', tabPatch: 'Feuille de patch', tabLabels: 'Étiquettes', legLabels: 'Étiquettes', lbFid: 'Fix ID', lbPatch: 'Adresse DMX (univ.adr)', lbName: 'Nom', lbType: 'Type de projecteur', lbChid: 'Ch ID', lbLayer: 'Nom du layer (bandeau)', lbAnn: "Zone d'annotation", lbHint: "Annotation : cliquer en bas d'une étiquette dans l'aperçu et écrire.", legColors: 'Layers à imprimer', lcHint: 'Décocher un layer pour ne pas imprimer ses étiquettes. Cliquer sur la pastille pour changer sa couleur.', lcPrint: 'Imprimer les étiquettes de ce layer', colorsReset: 'Couleurs par défaut', annPh: 'annotation…', lbInfo: (f, n, p) => `${f} — ${n} étiquette${n > 1 ? 's' : ''}, ${p} planche${p > 1 ? 's' : ''} A3`, lbFoot: (p, n) => `Étiquettes · planche ${p}/${n}`, noLabels: 'Aucun projecteur à étiqueter.',
     lbCutGrp: 'A3 à découper (scotch)', lbAdhGrp: 'Planches adhésives A4', lbCustom: 'Autre planche (dimensions à saisir)…', lbOnly: 'Fix ID seul (lisible de loin)',
     cuPage: 'Papier', cuCols: 'Colonnes × lignes', cuW: 'Largeur étiquette (mm)', cuH: 'Hauteur étiquette (mm)', cuLeft: 'Marge gauche (mm)', cuTop: 'Marge haut (mm)', cuPx: 'Pas horizontal (mm)', cuPy: 'Pas vertical (mm)',
     lbAdhHint: "Planche adhésive : imprimer à 100 % (« Taille réelle »), marges Aucune. Faire d'abord un essai sur papier ordinaire, par transparence.",
@@ -511,7 +526,7 @@ const I18N = {
     legHeader: 'Header', lblTitle: 'Title', lblPlace: 'Venue / subtitle', lblNotes: 'Title block (free text)',
     line1: 'Line 1', line2: 'Line 2', line3: 'Line 3', line4: 'Line 4',
     legFormat: 'Paper size (landscape)', fmtA3: 'A3 · 3 columns', fmtA4: 'A4 · 2 columns',
-    legContent: 'Content', optSumLayer: 'Summary by layer', optSumUniv: 'Summary by universe', optSumType: 'Summary by fixture type', sumType: 'Summary by fixture type', thFxType: 'Fixture type', optLayer: 'Patch by layer', optUniv: 'Patch by universe', optHide: 'Hide unpatched fixtures', legHidden: 'Hidden fixtures', tabPatch: 'Patch sheet', tabLabels: 'Labels', legLabels: 'Labels', lbFid: 'Fix ID', lbPatch: 'DMX address (univ.addr)', lbName: 'Name', lbType: 'Fixture type', lbChid: 'Ch ID', lbLayer: 'Layer name (band)', lbAnn: 'Annotation area', lbHint: 'Annotation: click at the bottom of a label in the preview and type.', legColors: 'Layers to print', lcHint: 'Untick a layer to skip its labels. Click the swatch to change its colour.', lcPrint: 'Print labels for this layer', colorsReset: 'Default colours', annPh: 'note…', lbInfo: (f, n, p) => `${f} — ${n} label${n > 1 ? 's' : ''}, ${p} A3 sheet${p > 1 ? 's' : ''}`, lbFoot: (p, n) => `Labels · sheet ${p}/${n}`, noLabels: 'No fixture to label.',
+    legContent: 'Content', optSumLayer: 'Summary by layer', optSumUniv: 'Summary by universe', optSumType: 'Summary by fixture type', sumType: 'Summary by fixture type', thFxType: 'Fixture type', optLayer: 'Patch by layer', optUniv: 'Patch by universe', optMap: 'Universe occupancy map', secMap: 'Universe occupancy map', mapUsed: n => `${n}/512 channels used`, mapFree: 'Free:', mapFull: 'No free channel left', mapEst: 'Hatched: channel count unknown, range estimated up to the next fixture.', mapOvl: 'Red: conflicting channels.', optHide: 'Hide unpatched fixtures', legHidden: 'Hidden fixtures', tabPatch: 'Patch sheet', tabLabels: 'Labels', legLabels: 'Labels', lbFid: 'Fix ID', lbPatch: 'DMX address (univ.addr)', lbName: 'Name', lbType: 'Fixture type', lbChid: 'Ch ID', lbLayer: 'Layer name (band)', lbAnn: 'Annotation area', lbHint: 'Annotation: click at the bottom of a label in the preview and type.', legColors: 'Layers to print', lcHint: 'Untick a layer to skip its labels. Click the swatch to change its colour.', lcPrint: 'Print labels for this layer', colorsReset: 'Default colours', annPh: 'note…', lbInfo: (f, n, p) => `${f} — ${n} label${n > 1 ? 's' : ''}, ${p} A3 sheet${p > 1 ? 's' : ''}`, lbFoot: (p, n) => `Labels · sheet ${p}/${n}`, noLabels: 'No fixture to label.',
     lbCutGrp: 'A3 to cut out (tape)', lbAdhGrp: 'A4 adhesive label sheets', lbCustom: 'Other sheet (enter its dimensions)…', lbOnly: 'Fix ID only (readable from afar)',
     cuPage: 'Paper', cuCols: 'Columns × rows', cuW: 'Label width (mm)', cuH: 'Label height (mm)', cuLeft: 'Left margin (mm)', cuTop: 'Top margin (mm)', cuPx: 'Horizontal pitch (mm)', cuPy: 'Vertical pitch (mm)',
     lbAdhHint: 'Adhesive sheet: print at 100 % (“Actual size”), margins None. Do a test on plain paper first and hold it against the sheet.',
@@ -555,7 +570,7 @@ const I18N = {
     legHeader: 'Encabezado', lblTitle: 'Título', lblPlace: 'Lugar / subtítulo', lblNotes: 'Cajetín (texto libre)',
     line1: 'Línea 1', line2: 'Línea 2', line3: 'Línea 3', line4: 'Línea 4',
     legFormat: 'Tamaño de papel (horizontal)', fmtA3: 'A3 · 3 columnas', fmtA4: 'A4 · 2 columnas',
-    legContent: 'Contenido', optSumLayer: 'Resumen por layer', optSumUniv: 'Resumen por universo', optSumType: 'Resumen por tipo de aparato', sumType: 'Resumen por tipo', thFxType: 'Tipo de aparato', optLayer: 'Patch por layer', optUniv: 'Patch por universo', optHide: 'Ocultar los aparatos sin patch', legHidden: 'Aparatos ocultos', tabPatch: 'Hoja de patch', tabLabels: 'Etiquetas', legLabels: 'Etiquetas', lbFid: 'Fix ID', lbPatch: 'Dirección DMX (univ.dir)', lbName: 'Nombre', lbType: 'Tipo de aparato', lbChid: 'Ch ID', lbLayer: 'Nombre del layer (banda)', lbAnn: 'Zona de anotación', lbHint: 'Anotación: haz clic abajo de una etiqueta en la vista previa y escribe.', legColors: 'Layers a imprimir', lcHint: 'Desmarca un layer para no imprimir sus etiquetas. Haz clic en la muestra para cambiar su color.', lcPrint: 'Imprimir las etiquetas de este layer', colorsReset: 'Colores por defecto', annPh: 'nota…', lbInfo: (f, n, p) => `${f} — ${n} etiqueta${n > 1 ? 's' : ''}, ${p} hoja${p > 1 ? 's' : ''} A3`, lbFoot: (p, n) => `Etiquetas · hoja ${p}/${n}`, noLabels: 'Ningún aparato que etiquetar.',
+    legContent: 'Contenido', optSumLayer: 'Resumen por layer', optSumUniv: 'Resumen por universo', optSumType: 'Resumen por tipo de aparato', sumType: 'Resumen por tipo', thFxType: 'Tipo de aparato', optLayer: 'Patch por layer', optUniv: 'Patch por universo', optMap: 'Mapa de ocupación de universos', secMap: 'Mapa de ocupación de universos', mapUsed: n => `${n}/512 canales usados`, mapFree: 'Libre:', mapFull: 'Ningún canal libre', mapEst: 'Rayado: número de canales desconocido, rango estimado hasta el siguiente aparato.', mapOvl: 'Rojo: canales en conflicto.', optHide: 'Ocultar los aparatos sin patch', legHidden: 'Aparatos ocultos', tabPatch: 'Hoja de patch', tabLabels: 'Etiquetas', legLabels: 'Etiquetas', lbFid: 'Fix ID', lbPatch: 'Dirección DMX (univ.dir)', lbName: 'Nombre', lbType: 'Tipo de aparato', lbChid: 'Ch ID', lbLayer: 'Nombre del layer (banda)', lbAnn: 'Zona de anotación', lbHint: 'Anotación: haz clic abajo de una etiqueta en la vista previa y escribe.', legColors: 'Layers a imprimir', lcHint: 'Desmarca un layer para no imprimir sus etiquetas. Haz clic en la muestra para cambiar su color.', lcPrint: 'Imprimir las etiquetas de este layer', colorsReset: 'Colores por defecto', annPh: 'nota…', lbInfo: (f, n, p) => `${f} — ${n} etiqueta${n > 1 ? 's' : ''}, ${p} hoja${p > 1 ? 's' : ''} A3`, lbFoot: (p, n) => `Etiquetas · hoja ${p}/${n}`, noLabels: 'Ningún aparato que etiquetar.',
     lbCutGrp: 'A3 para recortar (cinta)', lbAdhGrp: 'Hojas adhesivas A4', lbCustom: 'Otra hoja (introducir sus medidas)…', lbOnly: 'Solo el Fix ID (legible de lejos)',
     cuPage: 'Papel', cuCols: 'Columnas × filas', cuW: 'Ancho de etiqueta (mm)', cuH: 'Alto de etiqueta (mm)', cuLeft: 'Margen izquierdo (mm)', cuTop: 'Margen superior (mm)', cuPx: 'Paso horizontal (mm)', cuPy: 'Paso vertical (mm)',
     lbAdhHint: 'Hoja adhesiva: imprimir al 100 % («Tamaño real»), márgenes Ninguno. Haz antes una prueba en papel normal y compárala a contraluz.',
@@ -599,7 +614,7 @@ const I18N = {
     legHeader: 'Kopfzeile', lblTitle: 'Titel', lblPlace: 'Ort / Untertitel', lblNotes: 'Schriftfeld (freier Text)',
     line1: 'Zeile 1', line2: 'Zeile 2', line3: 'Zeile 3', line4: 'Zeile 4',
     legFormat: 'Papierformat (quer)', fmtA3: 'A3 · 3 Spalten', fmtA4: 'A4 · 2 Spalten',
-    legContent: 'Inhalt', optSumLayer: 'Übersicht nach Layer', optSumUniv: 'Übersicht nach Universe', optSumType: 'Übersicht nach Gerätetyp', sumType: 'Übersicht nach Typ', thFxType: 'Gerätetyp', optLayer: 'Patch nach Layer', optUniv: 'Patch nach Universe', optHide: 'Ungepatchte Geräte ausblenden', legHidden: 'Ausgeblendete Geräte', tabPatch: 'Patchliste', tabLabels: 'Etiketten', legLabels: 'Etiketten', lbFid: 'Fix ID', lbPatch: 'DMX-Adresse (Univ.Adr)', lbName: 'Name', lbType: 'Gerätetyp', lbChid: 'Ch ID', lbLayer: 'Layer-Name (Band)', lbAnn: 'Notizfeld', lbHint: 'Notiz: in der Vorschau unten auf ein Etikett klicken und schreiben.', legColors: 'Zu druckende Layer', lcHint: 'Layer abwählen, um seine Etiketten nicht zu drucken. Auf das Farbfeld klicken, um die Farbe zu ändern.', lcPrint: 'Etiketten dieses Layers drucken', colorsReset: 'Standardfarben', annPh: 'Notiz…', lbInfo: (f, n, p) => `${f} — ${n} Etikett${n > 1 ? 'en' : ''}, ${p} A3-Bogen`, lbFoot: (p, n) => `Etiketten · Bogen ${p}/${n}`, noLabels: 'Keine Geräte zu etikettieren.',
+    legContent: 'Inhalt', optSumLayer: 'Übersicht nach Layer', optSumUniv: 'Übersicht nach Universe', optSumType: 'Übersicht nach Gerätetyp', sumType: 'Übersicht nach Typ', thFxType: 'Gerätetyp', optLayer: 'Patch nach Layer', optUniv: 'Patch nach Universe', optMap: 'Belegungsplan der Universes', secMap: 'Belegungsplan der Universes', mapUsed: n => `${n}/512 Kanäle belegt`, mapFree: 'Frei:', mapFull: 'Kein freier Kanal mehr', mapEst: 'Schraffiert: Kanalanzahl unbekannt, Bereich bis zum nächsten Gerät geschätzt.', mapOvl: 'Rot: Kanäle im Konflikt.', optHide: 'Ungepatchte Geräte ausblenden', legHidden: 'Ausgeblendete Geräte', tabPatch: 'Patchliste', tabLabels: 'Etiketten', legLabels: 'Etiketten', lbFid: 'Fix ID', lbPatch: 'DMX-Adresse (Univ.Adr)', lbName: 'Name', lbType: 'Gerätetyp', lbChid: 'Ch ID', lbLayer: 'Layer-Name (Band)', lbAnn: 'Notizfeld', lbHint: 'Notiz: in der Vorschau unten auf ein Etikett klicken und schreiben.', legColors: 'Zu druckende Layer', lcHint: 'Layer abwählen, um seine Etiketten nicht zu drucken. Auf das Farbfeld klicken, um die Farbe zu ändern.', lcPrint: 'Etiketten dieses Layers drucken', colorsReset: 'Standardfarben', annPh: 'Notiz…', lbInfo: (f, n, p) => `${f} — ${n} Etikett${n > 1 ? 'en' : ''}, ${p} A3-Bogen`, lbFoot: (p, n) => `Etiketten · Bogen ${p}/${n}`, noLabels: 'Keine Geräte zu etikettieren.',
     lbCutGrp: 'A3 zum Ausschneiden (Klebeband)', lbAdhGrp: 'Klebeetiketten-Bögen A4', lbCustom: 'Anderer Bogen (Maße eingeben)…', lbOnly: 'Nur Fix ID (aus der Ferne lesbar)',
     cuPage: 'Papier', cuCols: 'Spalten × Zeilen', cuW: 'Etikettenbreite (mm)', cuH: 'Etikettenhöhe (mm)', cuLeft: 'Rand links (mm)', cuTop: 'Rand oben (mm)', cuPx: 'Abstand horizontal (mm)', cuPy: 'Abstand vertikal (mm)',
     lbAdhHint: 'Klebebogen: mit 100 % drucken („Tatsächliche Größe“), Ränder Keine. Zuerst auf Normalpapier testen und gegen das Licht vergleichen.',
@@ -643,7 +658,7 @@ const I18N = {
     legHeader: 'ヘッダー', lblTitle: 'タイトル', lblPlace: '会場 / サブタイトル', lblNotes: '表題欄（自由記入）',
     line1: '1行目', line2: '2行目', line3: '3行目', line4: '4行目',
     legFormat: '用紙サイズ（横向き）', fmtA3: 'A3 · 3列', fmtA4: 'A4 · 2列',
-    legContent: '内容', optSumLayer: 'レイヤー別集計', optSumUniv: 'ユニバース別集計', optSumType: '機種別集計', sumType: '機種別集計', thFxType: '機種', optLayer: 'レイヤー別パッチ', optUniv: 'ユニバース別パッチ', optHide: '未パッチの機材を隠す', legHidden: '非表示の機材', tabPatch: 'パッチシート', tabLabels: 'ラベル', legLabels: 'ラベル', lbFid: 'Fix ID', lbPatch: 'DMXアドレス（univ.addr）', lbName: '名前', lbType: '機種', lbChid: 'Ch ID', lbLayer: 'レイヤー名（帯）', lbAnn: 'メモ欄', lbHint: 'メモ：プレビューでラベルの下部をクリックして入力。', legColors: '印刷するレイヤー', lcHint: 'チェックを外すとそのレイヤーのラベルは印刷されません。色見本をクリックすると色を変更できます。', lcPrint: 'このレイヤーのラベルを印刷', colorsReset: '既定の色', annPh: 'メモ…', lbInfo: (f, n, p) => `${f} — ラベル ${n} 枚、A3 ${p} 枚`, lbFoot: (p, n) => `ラベル · ${p}/${n} 枚目`, noLabels: 'ラベルを作る機材がありません。',
+    legContent: '内容', optSumLayer: 'レイヤー別集計', optSumUniv: 'ユニバース別集計', optSumType: '機種別集計', sumType: '機種別集計', thFxType: '機種', optLayer: 'レイヤー別パッチ', optUniv: 'ユニバース別パッチ', optMap: 'ユニバース使用状況マップ', secMap: 'ユニバース使用状況マップ', mapUsed: n => `使用 ${n}/512 ch`, mapFree: '空き：', mapFull: '空きチャンネルなし', mapEst: '斜線：チャンネル数不明、次の機材までと推定。', mapOvl: '赤：競合しているチャンネル。', optHide: '未パッチの機材を隠す', legHidden: '非表示の機材', tabPatch: 'パッチシート', tabLabels: 'ラベル', legLabels: 'ラベル', lbFid: 'Fix ID', lbPatch: 'DMXアドレス（univ.addr）', lbName: '名前', lbType: '機種', lbChid: 'Ch ID', lbLayer: 'レイヤー名（帯）', lbAnn: 'メモ欄', lbHint: 'メモ：プレビューでラベルの下部をクリックして入力。', legColors: '印刷するレイヤー', lcHint: 'チェックを外すとそのレイヤーのラベルは印刷されません。色見本をクリックすると色を変更できます。', lcPrint: 'このレイヤーのラベルを印刷', colorsReset: '既定の色', annPh: 'メモ…', lbInfo: (f, n, p) => `${f} — ラベル ${n} 枚、A3 ${p} 枚`, lbFoot: (p, n) => `ラベル · ${p}/${n} 枚目`, noLabels: 'ラベルを作る機材がありません。',
     lbCutGrp: 'A3 切り取り用（テープ貼り）', lbAdhGrp: 'A4 ラベルシール用紙', lbCustom: 'その他の用紙（寸法を入力）…', lbOnly: 'Fix ID のみ（遠くから読める）',
     cuPage: '用紙', cuCols: '列 × 行', cuW: 'ラベル幅 (mm)', cuH: 'ラベル高さ (mm)', cuLeft: '左余白 (mm)', cuTop: '上余白 (mm)', cuPx: '横ピッチ (mm)', cuPy: '縦ピッチ (mm)',
     lbAdhHint: 'ラベル用紙：100 %（実際のサイズ）、余白なしで印刷。まず普通紙で試し、用紙に重ねて透かして確認してください。',
@@ -687,7 +702,7 @@ const I18N = {
     legHeader: 'Заголовок', lblTitle: 'Название', lblPlace: 'Площадка / подзаголовок', lblNotes: 'Штамп (свободный текст)',
     line1: 'Строка 1', line2: 'Строка 2', line3: 'Строка 3', line4: 'Строка 4',
     legFormat: 'Формат бумаги (альбомный)', fmtA3: 'A3 · 3 колонки', fmtA4: 'A4 · 2 колонки',
-    legContent: 'Содержание', optSumLayer: 'Сводка по слоям', optSumUniv: 'Сводка по юниверсам', optSumType: 'Сводка по типам приборов', sumType: 'Сводка по типам', thFxType: 'Тип прибора', optLayer: 'Патч по слоям', optUniv: 'Патч по юниверсам', optHide: 'Скрыть незапатченные приборы', legHidden: 'Скрытые приборы', tabPatch: 'Патч-лист', tabLabels: 'Этикетки', legLabels: 'Этикетки', lbFid: 'Fix ID', lbPatch: 'DMX-адрес (univ.addr)', lbName: 'Имя', lbType: 'Тип прибора', lbChid: 'Ch ID', lbLayer: 'Имя слоя (полоса)', lbAnn: 'Поле для заметки', lbHint: 'Заметка: нажмите внизу этикетки в предпросмотре и пишите.', legColors: 'Слои для печати', lcHint: 'Снимите отметку со слоя, чтобы не печатать его этикетки. Нажмите на образец цвета, чтобы изменить цвет.', lcPrint: 'Печатать этикетки этого слоя', colorsReset: 'Цвета по умолчанию', annPh: 'заметка…', lbInfo: (f, n, p) => `${f} — этикеток: ${n}, листов A3: ${p}`, lbFoot: (p, n) => `Этикетки · лист ${p}/${n}`, noLabels: 'Нет приборов для этикеток.',
+    legContent: 'Содержание', optSumLayer: 'Сводка по слоям', optSumUniv: 'Сводка по юниверсам', optSumType: 'Сводка по типам приборов', sumType: 'Сводка по типам', thFxType: 'Тип прибора', optLayer: 'Патч по слоям', optUniv: 'Патч по юниверсам', optMap: 'Карта занятости юниверсов', secMap: 'Карта занятости юниверсов', mapUsed: n => `занято каналов: ${n}/512`, mapFree: 'Свободно:', mapFull: 'Свободных каналов нет', mapEst: 'Штриховка: число каналов неизвестно, диапазон оценён до следующего прибора.', mapOvl: 'Красный: каналы в конфликте.', optHide: 'Скрыть незапатченные приборы', legHidden: 'Скрытые приборы', tabPatch: 'Патч-лист', tabLabels: 'Этикетки', legLabels: 'Этикетки', lbFid: 'Fix ID', lbPatch: 'DMX-адрес (univ.addr)', lbName: 'Имя', lbType: 'Тип прибора', lbChid: 'Ch ID', lbLayer: 'Имя слоя (полоса)', lbAnn: 'Поле для заметки', lbHint: 'Заметка: нажмите внизу этикетки в предпросмотре и пишите.', legColors: 'Слои для печати', lcHint: 'Снимите отметку со слоя, чтобы не печатать его этикетки. Нажмите на образец цвета, чтобы изменить цвет.', lcPrint: 'Печатать этикетки этого слоя', colorsReset: 'Цвета по умолчанию', annPh: 'заметка…', lbInfo: (f, n, p) => `${f} — этикеток: ${n}, листов A3: ${p}`, lbFoot: (p, n) => `Этикетки · лист ${p}/${n}`, noLabels: 'Нет приборов для этикеток.',
     lbCutGrp: 'A3 для вырезания (скотч)', lbAdhGrp: 'Листы самоклеящихся этикеток A4', lbCustom: 'Другой лист (ввести размеры)…', lbOnly: 'Только Fix ID (читается издалека)',
     cuPage: 'Бумага', cuCols: 'Колонки × ряды', cuW: 'Ширина этикетки (мм)', cuH: 'Высота этикетки (мм)', cuLeft: 'Отступ слева (мм)', cuTop: 'Отступ сверху (мм)', cuPx: 'Шаг по горизонтали (мм)', cuPy: 'Шаг по вертикали (мм)',
     lbAdhHint: 'Самоклеящийся лист: печатать в масштабе 100 % («Фактический размер»), поля «Нет». Сначала сделайте пробу на обычной бумаге и сравните на просвет.',
@@ -731,7 +746,7 @@ const I18N = {
     legHeader: 'الترويسة', lblTitle: 'العنوان', lblPlace: 'المكان / عنوان فرعي', lblNotes: 'خانة البيانات (نص حر)',
     line1: 'السطر 1', line2: 'السطر 2', line3: 'السطر 3', line4: 'السطر 4',
     legFormat: 'حجم الورق (أفقي)', fmtA3: 'A3 · ‏3 أعمدة', fmtA4: 'A4 · ‏عمودان',
-    legContent: 'المحتوى', optSumLayer: 'ملخص حسب الطبقة', optSumUniv: 'ملخص حسب اليونيفرس', optSumType: 'ملخص حسب نوع الجهاز', sumType: 'ملخص حسب النوع', thFxType: 'نوع الجهاز', optLayer: 'الباتش حسب الطبقة', optUniv: 'الباتش حسب اليونيفرس', optHide: 'إخفاء الأجهزة غير الموصولة', legHidden: 'الأجهزة المخفية', tabPatch: 'جدول الباتش', tabLabels: 'الملصقات', legLabels: 'الملصقات', lbFid: 'Fix ID', lbPatch: 'عنوان DMX ‏(univ.addr)', lbName: 'الاسم', lbType: 'نوع الجهاز', lbChid: 'Ch ID', lbLayer: 'اسم الطبقة (الشريط)', lbAnn: 'مساحة للملاحظة', lbHint: 'ملاحظة: انقر أسفل الملصق في المعاينة واكتب.', legColors: 'الطبقات المراد طباعتها', lcHint: 'ألغِ تحديد طبقة لعدم طباعة ملصقاتها. انقر على عيّنة اللون لتغييره.', lcPrint: 'طباعة ملصقات هذه الطبقة', colorsReset: 'الألوان الافتراضية', annPh: 'ملاحظة…', lbInfo: (f, n, p) => `${f} — الملصقات: ${n}، أوراق A3: ${p}`, lbFoot: (p, n) => `الملصقات · الورقة ${p}/${n}`, noLabels: 'لا توجد أجهزة لوضع ملصقات عليها.',
+    legContent: 'المحتوى', optSumLayer: 'ملخص حسب الطبقة', optSumUniv: 'ملخص حسب اليونيفرس', optSumType: 'ملخص حسب نوع الجهاز', sumType: 'ملخص حسب النوع', thFxType: 'نوع الجهاز', optLayer: 'الباتش حسب الطبقة', optUniv: 'الباتش حسب اليونيفرس', optMap: 'خريطة إشغال اليونيفرسات', secMap: 'خريطة إشغال اليونيفرسات', mapUsed: n => `القنوات المستخدمة: ${n}/512`, mapFree: 'متاح:', mapFull: 'لا توجد قنوات متاحة', mapEst: 'مخطط: عدد القنوات غير معروف، والنطاق تقديري حتى الجهاز التالي.', mapOvl: 'أحمر: قنوات متعارضة.', optHide: 'إخفاء الأجهزة غير الموصولة', legHidden: 'الأجهزة المخفية', tabPatch: 'جدول الباتش', tabLabels: 'الملصقات', legLabels: 'الملصقات', lbFid: 'Fix ID', lbPatch: 'عنوان DMX ‏(univ.addr)', lbName: 'الاسم', lbType: 'نوع الجهاز', lbChid: 'Ch ID', lbLayer: 'اسم الطبقة (الشريط)', lbAnn: 'مساحة للملاحظة', lbHint: 'ملاحظة: انقر أسفل الملصق في المعاينة واكتب.', legColors: 'الطبقات المراد طباعتها', lcHint: 'ألغِ تحديد طبقة لعدم طباعة ملصقاتها. انقر على عيّنة اللون لتغييره.', lcPrint: 'طباعة ملصقات هذه الطبقة', colorsReset: 'الألوان الافتراضية', annPh: 'ملاحظة…', lbInfo: (f, n, p) => `${f} — الملصقات: ${n}، أوراق A3: ${p}`, lbFoot: (p, n) => `الملصقات · الورقة ${p}/${n}`, noLabels: 'لا توجد أجهزة لوضع ملصقات عليها.',
     lbCutGrp: 'A3 للقص (بشريط لاصق)', lbAdhGrp: 'أوراق ملصقات لاصقة A4', lbCustom: 'ورقة أخرى (أدخل أبعادها)…', lbOnly: 'Fix ID فقط (يُقرأ من بعيد)',
     cuPage: 'الورق', cuCols: 'أعمدة × صفوف', cuW: 'عرض الملصق (مم)', cuH: 'ارتفاع الملصق (مم)', cuLeft: 'الهامش الأيسر (مم)', cuTop: 'الهامش العلوي (مم)', cuPx: 'الخطوة الأفقية (مم)', cuPy: 'الخطوة العمودية (مم)',
     lbAdhHint: 'ورقة لاصقة: اطبع بنسبة 100 % («الحجم الفعلي») وبدون هوامش. جرّب أولاً على ورق عادي وقارنه بالورقة في الضوء.',
@@ -1224,6 +1239,8 @@ function render() {
     });
   });
   if (page1 !== null) sheets.splice(pre.length, 0, page1);
+  // plan d'occupation : juste après la page des récapitulatifs
+  if ($('#optMap').checked && A.univs.length) sheets.splice(pre.length + 1, 0, ...univMapPages(A, fmt));
 
   const foot = lieu ? `${titre} — ${lieu}` : titre;
   const dsh = ($('#diffInSheet').checked && state.ref) ? diffSheets(fmt).sheets : [];
@@ -1234,6 +1251,60 @@ function render() {
   applyZoom();
   $('#pageInfo').textContent = t('pageInfo', state.fileName, n, fmt);
   document.title = `${titre} — ${t('docTitle')}`;
+}
+
+// ───────────── plan d'occupation des univers ─────────────
+// Chaque univers = une barre de 512 canaux. Plage exacte si le fichier donne le nombre de canaux
+// (WYSIWYG, Capture, plugin) ; sinon plage estimée jusqu'au projecteur suivant, hachurée.
+function univMapPages(A, fmt) {
+  const { H } = FORMATS[fmt], pageH = H - 2 * MARGIN - 7, BLK = 17;
+  const colors = layerColors(A.layers);
+  const pc = x => (x / 512 * 100).toFixed(3) + '%';
+  let anyEst = false, anyOvl = false;
+  const blocks = A.univs.map(u => {
+    const g = A.patched.filter(f => f.univ === u).sort((a, b) => a.addr - b.addr);
+    const occ = new Uint8Array(514);
+    let known = true;
+    const segs = g.map((f, i) => {
+      let n = f.nch, est = false;
+      if (!n) {
+        est = true; known = false; anyEst = true;
+        const nx = g.slice(i + 1).find(x => x.addr > f.addr);
+        n = Math.max(1, (nx ? nx.addr : f.addr + 1) - f.addr);
+      }
+      const end = Math.min(512, f.addr + n - 1);
+      if (!est) for (let c = f.addr; c <= end; c++) occ[c]++;
+      const c = colors[f.layer];
+      const tip = `${fxLabel(f)} · ${f.univ}.${pad3(f.addr)}${est ? '' : '–' + pad3(end)}`;
+      return `<div class="useg${est ? ' est' : ''}" style="left:${pc(f.addr - 1)};width:${pc(end - f.addr + 1)};--c:${c};--ct:${textOn(c)}" title="${esc(tip)}">${esc(f.id)}</div>`;
+    }).join('');
+    // conflits (plages connues qui se recouvrent) et plages libres
+    let ovl = '', free = [], used = 0, a0 = 0;
+    for (let c = 1; c <= 513; c++) {
+      if (c <= 512 && occ[c] > 1) { if (!a0) a0 = c; } else if (a0) { ovl += `<div class="ovl" style="left:${pc(a0 - 1)};width:${pc(c - a0)}"></div>`; a0 = 0; anyOvl = true; }
+    }
+    let f0 = 0;
+    for (let c = 1; c <= 513; c++) {
+      if (c <= 512 && occ[c]) used++;
+      if (c <= 512 && !occ[c]) { if (!f0) f0 = c; } else if (f0) { free.push([f0, c - 1]); f0 = 0; }
+    }
+    const info = known
+      ? `<span>${esc(t('mapUsed', used))}</span><span class="free">${esc(free.length ? t('mapFree') + ' ' + [...free].sort((x, y) => (y[1] - y[0]) - (x[1] - x[0]) || x[0] - y[0]).slice(0, 5)
+        .map(([a, b]) => `${pad3(a)}–${pad3(b)} (${b - a + 1})`).join(' · ') + (free.length > 5 ? ' · …' : '') : t('mapFull'))}</span>`
+      : `<span>${esc(plural(g.length))}</span>`;
+    const ticks = [1, 65, 129, 193, 257, 321, 385, 449, 512].map(x => `<span style="left:${pc(x - .5)}">${x}</span>`).join('');
+    return `<div class="umap"><div class="uh"><b>${esc(t('univ'))} ${u}</b>${info}</div><div class="bar">${segs}${ovl}</div><div class="scale">${ticks}</div></div>`;
+  });
+  const legend = [anyEst ? t('mapEst') : '', anyOvl ? t('mapOvl') : ''].filter(Boolean).join(' ');
+  const head = `<h2>${esc(t('secMap'))}</h2>` + (legend ? `<p class="maplegend">${esc(legend)}</p>` : '');
+  const pages = [];
+  let cur = head, room = pageH - H2 - (legend ? 5 : 0);
+  for (const b of blocks) {
+    if (room < BLK) { pages.push(cur); cur = ''; room = pageH; }
+    cur += b; room -= BLK;
+  }
+  if (cur) pages.push(cur);
+  return pages;
 }
 
 // ───────────── comparaison avec un ancien patch ─────────────
@@ -1365,7 +1436,7 @@ $('#alerts').addEventListener('click', async e => {
 });
 
 // ───────────── enregistrer : une feuille .html autonome ─────────────
-const CHECKS = ['optSumLayer', 'optSumUniv', 'optSumType', 'optLayer', 'optUniv', 'optHideUnp', 'optExport',
+const CHECKS = ['optSumLayer', 'optSumUniv', 'optSumType', 'optLayer', 'optUniv', 'optMap', 'optHideUnp', 'optExport',
                 'lbOnly', 'lbFid', 'lbPatch', 'lbName', 'lbType', 'lbChid', 'lbLayer', 'lbAnn', 'lbHideUnp', 'diffInSheet'];
 function saveSheet() {
   if (!state.fx) return;
@@ -1560,7 +1631,7 @@ for (const id of ['titre', 'lieu', 'note1', 'note2', 'note3', 'note4']) {
   el.value = store.get(id, el.value);
   el.addEventListener('input', () => { store.set(id, el.value); render(); });
 }
-for (const id of ['optSumLayer', 'optSumUniv', 'optSumType', 'optLayer', 'optUniv', 'optHideUnp', 'optExport', 'diffInSheet']) {
+for (const id of ['optSumLayer', 'optSumUniv', 'optSumType', 'optLayer', 'optUniv', 'optMap', 'optHideUnp', 'optExport', 'diffInSheet']) {
   const el = $('#' + id);
   el.checked = store.get(id, el.checked);
   el.addEventListener('change', () => { store.set(id, el.checked); if (state.fx) showInfo(); render(); });
